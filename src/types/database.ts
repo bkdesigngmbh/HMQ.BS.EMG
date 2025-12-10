@@ -34,43 +34,54 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: "profiles_id_fkey";
-            columns: ["id"];
-            referencedRelation: "users";
-            referencedColumns: ["id"];
-          }
-        ];
+        Relationships: [];
       };
       geraete: {
         Row: {
           id: string;
+          name: string;
+          eigentum: "eigen" | "miete";
           seriennummer: string;
+          client: string | null;
+          ip_adresse: string | null;
+          pin: string | null;
           geraeteart_id: string | null;
           status_id: string | null;
-          standort: string | null;
-          bemerkungen: string | null;
+          kaufdatum: string | null;
+          naechster_service: string | null;
+          notizen: string | null;
           created_at: string;
           updated_at: string;
         };
         Insert: {
           id?: string;
+          name: string;
+          eigentum: "eigen" | "miete";
           seriennummer: string;
+          client?: string | null;
+          ip_adresse?: string | null;
+          pin?: string | null;
           geraeteart_id?: string | null;
           status_id?: string | null;
-          standort?: string | null;
-          bemerkungen?: string | null;
+          kaufdatum?: string | null;
+          naechster_service?: string | null;
+          notizen?: string | null;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
           id?: string;
+          name?: string;
+          eigentum?: "eigen" | "miete";
           seriennummer?: string;
+          client?: string | null;
+          ip_adresse?: string | null;
+          pin?: string | null;
           geraeteart_id?: string | null;
           status_id?: string | null;
-          standort?: string | null;
-          bemerkungen?: string | null;
+          kaufdatum?: string | null;
+          naechster_service?: string | null;
+          notizen?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -122,27 +133,27 @@ export interface Database {
         Row: {
           id: string;
           auftragsnummer: string;
-          kunde: string;
-          beschreibung: string | null;
-          status: "offen" | "aktiv" | "abgeschlossen";
+          auftragsort: string | null;
+          bezeichnung: string | null;
+          status: "aktiv" | "inaktiv";
           created_at: string;
           updated_at: string;
         };
         Insert: {
           id?: string;
           auftragsnummer: string;
-          kunde: string;
-          beschreibung?: string | null;
-          status?: "offen" | "aktiv" | "abgeschlossen";
+          auftragsort?: string | null;
+          bezeichnung?: string | null;
+          status?: "aktiv" | "inaktiv";
           created_at?: string;
           updated_at?: string;
         };
         Update: {
           id?: string;
           auftragsnummer?: string;
-          kunde?: string;
-          beschreibung?: string | null;
-          status?: "offen" | "aktiv" | "abgeschlossen";
+          auftragsort?: string | null;
+          bezeichnung?: string | null;
+          status?: "aktiv" | "inaktiv";
           created_at?: string;
           updated_at?: string;
         };
@@ -153,12 +164,15 @@ export interface Database {
           id: string;
           geraet_id: string;
           auftrag_id: string;
-          standort_adresse: string | null;
-          standort_lat: number | null;
-          standort_lng: number | null;
-          startdatum: string;
-          enddatum: string | null;
-          bemerkungen: string | null;
+          von_datum: string;
+          bis_provisorisch: string | null;
+          bis_effektiv: string | null;
+          strasse: string | null;
+          plz: string | null;
+          ort: string | null;
+          lat: number | null;
+          lng: number | null;
+          notizen: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -166,12 +180,15 @@ export interface Database {
           id?: string;
           geraet_id: string;
           auftrag_id: string;
-          standort_adresse?: string | null;
-          standort_lat?: number | null;
-          standort_lng?: number | null;
-          startdatum: string;
-          enddatum?: string | null;
-          bemerkungen?: string | null;
+          von_datum: string;
+          bis_provisorisch?: string | null;
+          bis_effektiv?: string | null;
+          strasse?: string | null;
+          plz?: string | null;
+          ort?: string | null;
+          lat?: number | null;
+          lng?: number | null;
+          notizen?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -179,12 +196,15 @@ export interface Database {
           id?: string;
           geraet_id?: string;
           auftrag_id?: string;
-          standort_adresse?: string | null;
-          standort_lat?: number | null;
-          standort_lng?: number | null;
-          startdatum?: string;
-          enddatum?: string | null;
-          bemerkungen?: string | null;
+          von_datum?: string;
+          bis_provisorisch?: string | null;
+          bis_effektiv?: string | null;
+          strasse?: string | null;
+          plz?: string | null;
+          ort?: string | null;
+          lat?: number | null;
+          lng?: number | null;
+          notizen?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -196,8 +216,8 @@ export interface Database {
           geraet_id: string;
           wartungsart_id: string | null;
           datum: string;
-          naechste_wartung: string | null;
-          bemerkungen: string | null;
+          durchgefuehrt_von: string | null;
+          notizen: string | null;
           created_at: string;
         };
         Insert: {
@@ -205,8 +225,8 @@ export interface Database {
           geraet_id: string;
           wartungsart_id?: string | null;
           datum: string;
-          naechste_wartung?: string | null;
-          bemerkungen?: string | null;
+          durchgefuehrt_von?: string | null;
+          notizen?: string | null;
           created_at?: string;
         };
         Update: {
@@ -214,8 +234,8 @@ export interface Database {
           geraet_id?: string;
           wartungsart_id?: string | null;
           datum?: string;
-          naechste_wartung?: string | null;
-          bemerkungen?: string | null;
+          durchgefuehrt_von?: string | null;
+          notizen?: string | null;
           created_at?: string;
         };
         Relationships: [];
@@ -263,9 +283,37 @@ export interface Database {
 // Hilfreiche Type-Exports
 export type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 export type Geraet = Database["public"]["Tables"]["geraete"]["Row"];
+export type GeraetInsert = Database["public"]["Tables"]["geraete"]["Insert"];
+export type GeraetUpdate = Database["public"]["Tables"]["geraete"]["Update"];
 export type Geraeteart = Database["public"]["Tables"]["geraetearten"]["Row"];
 export type Geraetestatus = Database["public"]["Tables"]["geraetestatus"]["Row"];
 export type Auftrag = Database["public"]["Tables"]["auftraege"]["Row"];
+export type AuftragInsert = Database["public"]["Tables"]["auftraege"]["Insert"];
+export type AuftragUpdate = Database["public"]["Tables"]["auftraege"]["Update"];
 export type Einsatz = Database["public"]["Tables"]["einsaetze"]["Row"];
+export type EinsatzInsert = Database["public"]["Tables"]["einsaetze"]["Insert"];
+export type EinsatzUpdate = Database["public"]["Tables"]["einsaetze"]["Update"];
 export type Wartung = Database["public"]["Tables"]["wartungen"]["Row"];
+export type WartungInsert = Database["public"]["Tables"]["wartungen"]["Insert"];
 export type Wartungsart = Database["public"]["Tables"]["wartungsarten"]["Row"];
+
+// Erweiterte Types mit Relationen
+export type GeraetMitRelationen = Geraet & {
+  geraeteart: Geraeteart | null;
+  status: Geraetestatus | null;
+  aktiver_einsatz?: (Einsatz & { auftrag: Auftrag }) | null;
+};
+
+export type EinsatzMitRelationen = Einsatz & {
+  geraet: Geraet;
+  auftrag: Auftrag;
+};
+
+export type AuftragMitRelationen = Auftrag & {
+  einsaetze?: EinsatzMitRelationen[];
+  geraete_anzahl?: number;
+};
+
+export type WartungMitRelationen = Wartung & {
+  wartungsart: Wartungsart | null;
+};
