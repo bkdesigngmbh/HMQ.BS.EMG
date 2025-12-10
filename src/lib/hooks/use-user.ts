@@ -3,17 +3,24 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
-import type { Profile } from "@/types/database";
+
+// Lokaler Profil-Typ basierend auf der tatsächlichen DB-Struktur
+interface UserProfile {
+  id: string;
+  email: string;
+  name: string | null;
+  rolle: "admin" | "user";
+}
 
 interface UseUserReturn {
   user: User | null;
-  profile: Profile | null;
+  profile: UserProfile | null;
   isLoading: boolean;
 }
 
 export function useUser(): UseUserReturn {
   const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -21,20 +28,32 @@ export function useUser(): UseUserReturn {
     const supabase = createClient();
     let mounted = true;
 
-    async function loadProfile(userId: string) {
+    async function loadProfile(userId: string): Promise<UserProfile | null> {
       try {
-        const { data: profileData, error } = await supabase
+        // Nur die Felder laden, die wir wirklich brauchen
+        const { data, error } = await supabase
           .from("profiles")
-          .select("id, email, name, rolle, created_at, updated_at")
+          .select("*")
           .eq("id", userId)
           .single();
 
         if (error) {
-          console.error("Fehler beim Laden des Profils:", error.message, error.details);
+          console.error("Fehler beim Laden des Profils:", error.message);
           return null;
         }
 
-        return profileData as Profile;
+        if (!data) {
+          console.error("Kein Profil gefunden für User:", userId);
+          return null;
+        }
+
+        // Profil-Objekt mit den Feldern die wir brauchen
+        return {
+          id: data.id,
+          email: data.email,
+          name: data.name,
+          rolle: data.rolle,
+        };
       } catch (error) {
         console.error("Fehler beim Laden des Profils:", error);
         return null;
