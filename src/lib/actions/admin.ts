@@ -9,7 +9,7 @@ export async function getGeraetestatus() {
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from("geraetestatus")
+    .from("status")
     .select("*")
     .order("name");
 
@@ -24,7 +24,7 @@ export async function createGeraetestatus(values: { name: string; farbe: string 
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from("geraetestatus")
+    .from("status")
     .insert(values)
     .select()
     .single();
@@ -40,7 +40,7 @@ export async function createGeraetestatus(values: { name: string; farbe: string 
 export async function deleteGeraetestatus(id: string) {
   const supabase = await createClient();
 
-  const { error } = await supabase.from("geraetestatus").delete().eq("id", id);
+  const { error } = await supabase.from("status").delete().eq("id", id);
 
   if (error) {
     throw new Error("Fehler beim Löschen des Status");

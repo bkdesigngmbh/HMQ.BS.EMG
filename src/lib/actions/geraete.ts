@@ -15,7 +15,7 @@ export async function getGeraete() {
     .select(`
       *,
       geraeteart:geraetearten(*),
-      status:geraetestatus(*)
+      status:status(*)
     `)
     .order("name", { ascending: true });
 
@@ -35,7 +35,7 @@ export async function getGeraet(id: string) {
     .select(`
       *,
       geraeteart:geraetearten(*),
-      status:geraetestatus(*)
+      status:status(*)
     `)
     .eq("id", id)
     .single();
@@ -57,7 +57,7 @@ export async function getGeraetMitAktiverEinsatz(id: string) {
     .select(`
       *,
       geraeteart:geraetearten(*),
-      status:geraetestatus(*)
+      status:status(*)
     `)
     .eq("id", id)
     .single();
@@ -157,7 +157,7 @@ export async function getGeraeteByStatus(statusName: string) {
     .select(`
       *,
       geraeteart:geraetearten(*),
-      status:geraetestatus!inner(*)
+      status:status!inner(*)
     `)
     .eq("status.name", statusName)
     .order("name", { ascending: true });
@@ -180,7 +180,7 @@ export async function getVerfuegbareGeraete() {
     .select(`
       *,
       geraeteart:geraetearten(*),
-      status:geraetestatus!inner(*)
+      status:status!inner(*)
     `)
     .eq("status.name", "im Büro")
     .order("name", { ascending: true });
@@ -214,7 +214,7 @@ export async function getGeraetestatus() {
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from("geraetestatus")
+    .from("status")
     .select("*")
     .order("name", { ascending: true });
 
@@ -235,7 +235,7 @@ export async function getGeraeteStatistiken() {
     .from("geraete")
     .select(`
       id,
-      status:geraetestatus(name)
+      status:status(name)
     `);
 
   if (error) {

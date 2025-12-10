@@ -77,7 +77,7 @@ export async function getAuftragMitEinsaetze(id: string) {
     .from("einsaetze")
     .select(`
       *,
-      geraet:geraete(*, status:geraetestatus(*))
+      geraet:geraete(*, status:status(*))
     `)
     .eq("auftrag_id", id)
     .order("von_datum", { ascending: false });

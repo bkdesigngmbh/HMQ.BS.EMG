@@ -186,7 +186,7 @@ export async function getAnstehendeWartungen() {
       id,
       name,
       naechster_service,
-      status:geraetestatus(name)
+      status:status(name)
     `)
     .not("naechster_service", "is", null)
     .lte("naechster_service", heute)
