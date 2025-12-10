@@ -15,7 +15,7 @@ export async function getEinsaetze() {
     .from("einsaetze")
     .select(`
       *,
-      geraet:geraete(*, status:geraetestatus(*)),
+      geraet:geraete(*, status:status(*)),
       auftrag:auftraege(*)
     `)
     .order("von_datum", { ascending: false });
@@ -35,7 +35,7 @@ export async function getEinsatz(id: string) {
     .from("einsaetze")
     .select(`
       *,
-      geraet:geraete(*, status:geraetestatus(*), geraeteart:geraetearten(*)),
+      geraet:geraete(*, status:status(*), geraeteart:geraetearten(*)),
       auftrag:auftraege(*)
     `)
     .eq("id", id)
@@ -67,7 +67,7 @@ export async function createEinsatz(values: EinsatzFormValues) {
 
   // Gerätestatus aktualisieren auf "im Einsatz"
   const { data: statusData } = await supabase
-    .from("geraetestatus")
+    .from("status")
     .select("id")
     .eq("name", "im Einsatz")
     .single();
@@ -167,7 +167,7 @@ export async function getAktiveEinsaetze() {
     .from("einsaetze")
     .select(`
       *,
-      geraet:geraete(*, status:geraetestatus(*)),
+      geraet:geraete(*, status:status(*)),
       auftrag:auftraege(*)
     `)
     .is("bis_effektiv", null)
@@ -208,7 +208,7 @@ export async function getEinsaetzeByAuftrag(auftragId: string) {
     .from("einsaetze")
     .select(`
       *,
-      geraet:geraete(*, status:geraetestatus(*))
+      geraet:geraete(*, status:status(*))
     `)
     .eq("auftrag_id", auftragId)
     .order("von_datum", { ascending: false });

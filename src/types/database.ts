@@ -108,7 +108,7 @@ export interface Database {
         };
         Relationships: [];
       };
-      geraetestatus: {
+      status: {
         Row: {
           id: string;
           name: string;
@@ -286,7 +286,7 @@ export type Geraet = Database["public"]["Tables"]["geraete"]["Row"];
 export type GeraetInsert = Database["public"]["Tables"]["geraete"]["Insert"];
 export type GeraetUpdate = Database["public"]["Tables"]["geraete"]["Update"];
 export type Geraeteart = Database["public"]["Tables"]["geraetearten"]["Row"];
-export type Geraetestatus = Database["public"]["Tables"]["geraetestatus"]["Row"];
+export type Geraetestatus = Database["public"]["Tables"]["status"]["Row"];
 export type Auftrag = Database["public"]["Tables"]["auftraege"]["Row"];
 export type AuftragInsert = Database["public"]["Tables"]["auftraege"]["Insert"];
 export type AuftragUpdate = Database["public"]["Tables"]["auftraege"]["Update"];
