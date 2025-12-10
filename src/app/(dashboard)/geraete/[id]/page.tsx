@@ -8,6 +8,8 @@ import { getEinsaetzeByGeraet } from "@/lib/actions/einsaetze";
 import { getWartungenByGeraet, getWartungsarten } from "@/lib/actions/wartungen";
 import { GeraeteDetailClient } from "./page-client";
 
+export const dynamic = "force-dynamic";
+
 interface PageProps {
   params: Promise<{ id: string }>;
 }

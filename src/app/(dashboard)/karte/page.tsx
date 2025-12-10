@@ -1,13 +1,15 @@
 import { Suspense } from "react";
-import dynamic from "next/dynamic";
+import nextDynamic from "next/dynamic";
 import { getAktiveEinsaetze } from "@/lib/actions/einsaetze";
 import { PageHeader } from "@/components/shared/page-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LoadingSpinner } from "@/components/shared/loading-spinner";
 import { Map, MapPin } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 // Dynamischer Import für Leaflet (Client-only)
-const LeafletMap = dynamic(
+const LeafletMap = nextDynamic(
   () => import("@/components/map/leaflet-map").then((mod) => mod.LeafletMap),
   {
     ssr: false,

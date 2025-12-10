@@ -3,6 +3,8 @@ import { getWartungsarten } from "@/lib/actions/admin";
 import { WartungsartenPageClient } from "./page-client";
 import { LoadingSpinner } from "@/components/shared/loading-spinner";
 
+export const dynamic = "force-dynamic";
+
 export default async function WartungsartenPage() {
   let wartungsarten: Awaited<ReturnType<typeof getWartungsarten>> = [];
 
