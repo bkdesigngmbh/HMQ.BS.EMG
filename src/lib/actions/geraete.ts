@@ -2,25 +2,34 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import type { GeraetFormValues } from "@/lib/validations/geraet";
+import {
+  type GeraetFormValues,
+  transformGeraetValues,
+} from "@/lib/validations/geraet";
 
 export async function getGeraete() {
-  const supabase = await createClient();
+  try {
+    const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .from("geraete")
-    .select(`
-      *,
-      geraeteart:geraetearten(*),
-      status:geraetestatus(*)
-    `)
-    .order("created_at", { ascending: false });
+    const { data, error } = await supabase
+      .from("geraete")
+      .select(`
+        *,
+        geraeteart:geraetearten(*),
+        status:status(*)
+      `)
+      .order("name", { ascending: true });
 
-  if (error) {
-    throw new Error("Fehler beim Laden der Geräte");
+    if (error) {
+      console.error("Fehler beim Laden der Geräte:", error);
+      return [];
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error("Fehler beim Laden der Geräte:", error);
+    return [];
   }
-
-  return data;
 }
 
 export async function getGeraet(id: string) {
@@ -31,51 +40,102 @@ export async function getGeraet(id: string) {
     .select(`
       *,
       geraeteart:geraetearten(*),
-      status:geraetestatus(*)
+      status:status(*)
     `)
     .eq("id", id)
     .single();
 
   if (error) {
+    console.error("Gerät nicht gefunden:", error);
     throw new Error("Gerät nicht gefunden");
   }
 
   return data;
 }
 
+export async function getGeraetMitAktiverEinsatz(id: string) {
+  const supabase = await createClient();
+
+  // Gerät laden
+  const { data: geraet, error: geraetError } = await supabase
+    .from("geraete")
+    .select(`
+      *,
+      geraeteart:geraetearten(*),
+      status:status(*)
+    `)
+    .eq("id", id)
+    .single();
+
+  if (geraetError) {
+    console.error("Gerät nicht gefunden:", geraetError);
+    throw new Error("Gerät nicht gefunden");
+  }
+
+  // Aktiven Einsatz laden (falls vorhanden)
+  const { data: einsatz } = await supabase
+    .from("einsaetze")
+    .select(`
+      *,
+      auftrag:auftraege(*)
+    `)
+    .eq("geraet_id", id)
+    .is("bis_effektiv", null)
+    .single();
+
+  return {
+    ...geraet,
+    aktiver_einsatz: einsatz || null,
+  };
+}
+
 export async function createGeraet(values: GeraetFormValues) {
   const supabase = await createClient();
 
+  const transformedValues = transformGeraetValues(values);
+
   const { data, error } = await supabase
     .from("geraete")
-    .insert(values)
+    .insert(transformedValues)
     .select()
     .single();
 
   if (error) {
+    console.error("Fehler beim Erstellen des Geräts:", error);
+    if (error.code === "23505") {
+      throw new Error("Ein Gerät mit diesem Namen existiert bereits");
+    }
     throw new Error("Fehler beim Erstellen des Geräts");
   }
 
   revalidatePath("/geraete");
+  revalidatePath("/");
   return data;
 }
 
 export async function updateGeraet(id: string, values: GeraetFormValues) {
   const supabase = await createClient();
 
+  const transformedValues = transformGeraetValues(values);
+
   const { data, error } = await supabase
     .from("geraete")
-    .update(values)
+    .update(transformedValues)
     .eq("id", id)
     .select()
     .single();
 
   if (error) {
+    console.error("Fehler beim Aktualisieren des Geräts:", error);
+    if (error.code === "23505") {
+      throw new Error("Ein Gerät mit diesem Namen existiert bereits");
+    }
     throw new Error("Fehler beim Aktualisieren des Geräts");
   }
 
   revalidatePath("/geraete");
   revalidatePath(`/geraete/${id}`);
+  revalidatePath("/");
   return data;
 }
 
@@ -85,8 +145,162 @@ export async function deleteGeraet(id: string) {
   const { error } = await supabase.from("geraete").delete().eq("id", id);
 
   if (error) {
+    console.error("Fehler beim Löschen des Geräts:", error);
     throw new Error("Fehler beim Löschen des Geräts");
   }
 
   revalidatePath("/geraete");
+  revalidatePath("/");
+}
+
+// Geräte nach Status filtern
+export async function getGeraeteByStatus(statusName: string) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("geraete")
+    .select(`
+      *,
+      geraeteart:geraetearten(*),
+      status:status!inner(*)
+    `)
+    .eq("status.name", statusName)
+    .order("name", { ascending: true });
+
+  if (error) {
+    console.error("Fehler beim Laden der Geräte:", error);
+    throw new Error("Fehler beim Laden der Geräte");
+  }
+
+  return data;
+}
+
+// Verfügbare Geräte für neuen Einsatz
+export async function getVerfuegbareGeraete() {
+  try {
+    const supabase = await createClient();
+
+    // Alle Geräte mit Status "im Büro" laden
+    const { data, error } = await supabase
+      .from("geraete")
+      .select(`
+        *,
+        geraeteart:geraetearten(*),
+        status:status!inner(*)
+      `)
+      .eq("status.name", "im Büro")
+      .order("name", { ascending: true });
+
+    if (error) {
+      console.error("Fehler beim Laden der verfügbaren Geräte:", error);
+      return [];
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error("Fehler beim Laden der verfügbaren Geräte:", error);
+    return [];
+  }
+}
+
+// Stammdaten laden
+export async function getGeraetearten() {
+  try {
+    const supabase = await createClient();
+
+    const { data, error } = await supabase
+      .from("geraetearten")
+      .select("*")
+      .order("name", { ascending: true });
+
+    if (error) {
+      console.error("Fehler beim Laden der Gerätearten:", error);
+      return [];
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error("Fehler beim Laden der Gerätearten:", error);
+    return [];
+  }
+}
+
+export async function getGeraetestatus() {
+  try {
+    const supabase = await createClient();
+
+    const { data, error } = await supabase
+      .from("status")
+      .select("*")
+      .order("name", { ascending: true });
+
+    if (error) {
+      console.error("Fehler beim Laden der Status:", error);
+      return [];
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error("Fehler beim Laden der Status:", error);
+    return [];
+  }
+}
+
+// Dashboard-Statistiken
+export async function getGeraeteStatistiken() {
+  const defaultStatistiken = {
+    gesamt: 0,
+    imBuero: 0,
+    imEinsatz: 0,
+    inWartung: 0,
+    defekt: 0,
+  };
+
+  try {
+    const supabase = await createClient();
+
+    // Alle Geräte mit Status laden
+    const { data: geraete, error } = await supabase
+      .from("geraete")
+      .select(`
+        id,
+        status:status(name)
+      `);
+
+    if (error) {
+      console.error("Fehler beim Laden der Statistiken:", error);
+      return defaultStatistiken;
+    }
+
+    const statistiken = {
+      gesamt: geraete?.length || 0,
+      imBuero: 0,
+      imEinsatz: 0,
+      inWartung: 0,
+      defekt: 0,
+    };
+
+    geraete?.forEach((g) => {
+      const statusName = (g.status as unknown as { name: string } | null)?.name;
+      switch (statusName) {
+        case "im Büro":
+          statistiken.imBuero++;
+          break;
+        case "im Einsatz":
+          statistiken.imEinsatz++;
+          break;
+        case "in Wartung":
+          statistiken.inWartung++;
+          break;
+        case "defekt":
+          statistiken.defekt++;
+          break;
+      }
+    });
+
+    return statistiken;
+  } catch (error) {
+    console.error("Fehler beim Laden der Statistiken:", error);
+    return defaultStatistiken;
+  }
 }

@@ -4,13 +4,21 @@ export const auftragSchema = z.object({
   auftragsnummer: z
     .string()
     .min(1, "Auftragsnummer ist erforderlich")
-    .max(50, "Auftragsnummer darf maximal 50 Zeichen lang sein"),
-  kunde: z
-    .string()
-    .min(1, "Kunde ist erforderlich")
-    .max(255, "Kundenname darf maximal 255 Zeichen lang sein"),
-  beschreibung: z.string().optional().nullable(),
-  status: z.enum(["offen", "aktiv", "abgeschlossen"]).default("offen"),
+    .regex(
+      /^51\d{4}\.\d{4}$/,
+      "Auftragsnummer muss im Format 51XXXX.XXXX sein"
+    ),
+  auftragsort: z.string().max(255).nullable().optional(),
+  bezeichnung: z.string().max(500).nullable().optional(),
+  status: z.enum(["aktiv", "inaktiv"]),
 });
 
 export type AuftragFormValues = z.infer<typeof auftragSchema>;
+
+export function transformAuftragValues(values: AuftragFormValues) {
+  return {
+    ...values,
+    auftragsort: values.auftragsort || null,
+    bezeichnung: values.bezeichnung || null,
+  };
+}

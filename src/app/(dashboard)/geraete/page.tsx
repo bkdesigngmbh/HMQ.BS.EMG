@@ -1,33 +1,46 @@
-"use client";
+import { Suspense } from "react";
+import { getGeraete, getGeraetearten, getGeraetestatus } from "@/lib/actions/geraete";
+import { GeraetePageClient } from "./page-client";
+import { LoadingSpinner } from "@/components/shared/loading-spinner";
 
-import { PageHeader } from "@/components/shared/page-header";
-import { Button } from "@/components/ui/button";
-import { EmptyState } from "@/components/shared/empty-state";
-import { Plus, Box } from "lucide-react";
+export default async function GeraetePage() {
+  // Fetch data with error handling
+  let geraete: Awaited<ReturnType<typeof getGeraete>> = [];
+  let geraetearten: Awaited<ReturnType<typeof getGeraetearten>> = [];
+  let statusListe: Awaited<ReturnType<typeof getGeraetestatus>> = [];
 
-export default function GeraetePage() {
+  try {
+    geraete = await getGeraete();
+  } catch (error) {
+    console.error("Fehler beim Laden der Geräte:", error);
+  }
+
+  try {
+    geraetearten = await getGeraetearten();
+  } catch (error) {
+    console.error("Fehler beim Laden der Gerätearten:", error);
+  }
+
+  try {
+    statusListe = await getGeraetestatus();
+  } catch (error) {
+    console.error("Fehler beim Laden der Status:", error);
+  }
+
   return (
-    <div className="p-6 space-y-6">
-      <PageHeader
-        title="Geräte"
-        description="Verwaltung aller Erschütterungsmessgeräte"
-      >
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Neues Gerät
-        </Button>
-      </PageHeader>
-
-      <EmptyState
-        title="Keine Geräte vorhanden"
-        description="Erstellen Sie ein neues Gerät, um zu beginnen."
-        icon={<Box className="h-6 w-6 text-muted-foreground" />}
-      >
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Gerät erstellen
-        </Button>
-      </EmptyState>
-    </div>
+    <Suspense
+      fallback={
+        <div className="flex h-64 items-center justify-center">
+          <LoadingSpinner />
+        </div>
+      }
+    >
+      <GeraetePageClient
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        initialGeraete={geraete as any}
+        geraetearten={geraetearten}
+        statusListe={statusListe}
+      />
+    </Suspense>
   );
 }

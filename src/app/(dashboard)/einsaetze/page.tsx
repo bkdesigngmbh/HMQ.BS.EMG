@@ -1,33 +1,47 @@
-"use client";
+import { Suspense } from "react";
+import { getEinsaetze } from "@/lib/actions/einsaetze";
+import { getVerfuegbareGeraete } from "@/lib/actions/geraete";
+import { getAktiveAuftraege } from "@/lib/actions/auftraege";
+import { EinsaetzePageClient } from "./page-client";
+import { LoadingSpinner } from "@/components/shared/loading-spinner";
 
-import { PageHeader } from "@/components/shared/page-header";
-import { Button } from "@/components/ui/button";
-import { EmptyState } from "@/components/shared/empty-state";
-import { Plus, Calendar } from "lucide-react";
+export default async function EinsaetzePage() {
+  // Fetch data with error handling
+  let einsaetze: Awaited<ReturnType<typeof getEinsaetze>> = [];
+  let verfuegbareGeraete: Awaited<ReturnType<typeof getVerfuegbareGeraete>> = [];
+  let auftraege: Awaited<ReturnType<typeof getAktiveAuftraege>> = [];
 
-export default function EinsaetzePage() {
+  try {
+    einsaetze = await getEinsaetze();
+  } catch (error) {
+    console.error("Fehler beim Laden der Einsätze:", error);
+  }
+
+  try {
+    verfuegbareGeraete = await getVerfuegbareGeraete();
+  } catch (error) {
+    console.error("Fehler beim Laden der verfügbaren Geräte:", error);
+  }
+
+  try {
+    auftraege = await getAktiveAuftraege();
+  } catch (error) {
+    console.error("Fehler beim Laden der Aufträge:", error);
+  }
+
   return (
-    <div className="p-6 space-y-6">
-      <PageHeader
-        title="Einsätze"
-        description="Übersicht aller Geräteeinsätze"
-      >
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Neuer Einsatz
-        </Button>
-      </PageHeader>
-
-      <EmptyState
-        title="Keine Einsätze vorhanden"
-        description="Erstellen Sie einen neuen Einsatz, um zu beginnen."
-        icon={<Calendar className="h-6 w-6 text-muted-foreground" />}
-      >
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Einsatz erstellen
-        </Button>
-      </EmptyState>
-    </div>
+    <Suspense
+      fallback={
+        <div className="flex h-64 items-center justify-center">
+          <LoadingSpinner />
+        </div>
+      }
+    >
+      <EinsaetzePageClient
+        initialEinsaetze={einsaetze}
+        verfuegbareGeraete={verfuegbareGeraete}
+        auftraege={auftraege}
+      />
+    </Suspense>
   );
 }
