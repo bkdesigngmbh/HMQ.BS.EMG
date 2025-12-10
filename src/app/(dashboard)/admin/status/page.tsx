@@ -3,6 +3,8 @@ import { getGeraetestatus } from "@/lib/actions/admin";
 import { StatusPageClient } from "./page-client";
 import { LoadingSpinner } from "@/components/shared/loading-spinner";
 
+export const dynamic = "force-dynamic";
+
 export default async function StatusPage() {
   let statusListe: Awaited<ReturnType<typeof getGeraetestatus>> = [];
 

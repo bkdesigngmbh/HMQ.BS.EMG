@@ -3,6 +3,8 @@ import { getAuftraege, getNextAuftragsnummer } from "@/lib/actions/auftraege";
 import { AuftraegePageClient } from "./page-client";
 import { LoadingSpinner } from "@/components/shared/loading-spinner";
 
+export const dynamic = "force-dynamic";
+
 export default async function AuftraegePage() {
   const [auftraege, nextAuftragsnummer] = await Promise.all([
     getAuftraege(),

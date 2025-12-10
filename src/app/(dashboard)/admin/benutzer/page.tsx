@@ -3,6 +3,8 @@ import { getBenutzer } from "@/lib/actions/admin";
 import { BenutzerPageClient } from "./page-client";
 import { LoadingSpinner } from "@/components/shared/loading-spinner";
 
+export const dynamic = "force-dynamic";
+
 export default async function BenutzerPage() {
   let benutzer: Awaited<ReturnType<typeof getBenutzer>> = [];
 

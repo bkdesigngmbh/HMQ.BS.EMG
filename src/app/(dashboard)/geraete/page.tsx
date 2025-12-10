@@ -3,6 +3,8 @@ import { getGeraete, getGeraetearten, getGeraetestatus } from "@/lib/actions/ger
 import { GeraetePageClient } from "./page-client";
 import { LoadingSpinner } from "@/components/shared/loading-spinner";
 
+export const dynamic = "force-dynamic";
+
 export default async function GeraetePage() {
   // Fetch data with error handling
   let geraete: Awaited<ReturnType<typeof getGeraete>> = [];
