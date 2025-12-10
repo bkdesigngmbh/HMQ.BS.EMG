@@ -228,46 +228,59 @@ export async function getGeraetestatus() {
 
 // Dashboard-Statistiken
 export async function getGeraeteStatistiken() {
-  const supabase = await createClient();
-
-  // Alle Geräte mit Status laden
-  const { data: geraete, error } = await supabase
-    .from("geraete")
-    .select(`
-      id,
-      status:status(name)
-    `);
-
-  if (error) {
-    console.error("Fehler beim Laden der Statistiken:", error);
-    throw new Error("Fehler beim Laden der Statistiken");
-  }
-
-  const statistiken = {
-    gesamt: geraete?.length || 0,
+  const defaultStatistiken = {
+    gesamt: 0,
     imBuero: 0,
     imEinsatz: 0,
     inWartung: 0,
     defekt: 0,
   };
 
-  geraete?.forEach((g) => {
-    const statusName = (g.status as unknown as { name: string } | null)?.name;
-    switch (statusName) {
-      case "im Büro":
-        statistiken.imBuero++;
-        break;
-      case "im Einsatz":
-        statistiken.imEinsatz++;
-        break;
-      case "in Wartung":
-        statistiken.inWartung++;
-        break;
-      case "defekt":
-        statistiken.defekt++;
-        break;
-    }
-  });
+  try {
+    const supabase = await createClient();
 
-  return statistiken;
+    // Alle Geräte mit Status laden
+    const { data: geraete, error } = await supabase
+      .from("geraete")
+      .select(`
+        id,
+        status:status(name)
+      `);
+
+    if (error) {
+      console.error("Fehler beim Laden der Statistiken:", error);
+      return defaultStatistiken;
+    }
+
+    const statistiken = {
+      gesamt: geraete?.length || 0,
+      imBuero: 0,
+      imEinsatz: 0,
+      inWartung: 0,
+      defekt: 0,
+    };
+
+    geraete?.forEach((g) => {
+      const statusName = (g.status as unknown as { name: string } | null)?.name;
+      switch (statusName) {
+        case "im Büro":
+          statistiken.imBuero++;
+          break;
+        case "im Einsatz":
+          statistiken.imEinsatz++;
+          break;
+        case "in Wartung":
+          statistiken.inWartung++;
+          break;
+        case "defekt":
+          statistiken.defekt++;
+          break;
+      }
+    });
+
+    return statistiken;
+  } catch (error) {
+    console.error("Fehler beim Laden der Statistiken:", error);
+    return defaultStatistiken;
+  }
 }

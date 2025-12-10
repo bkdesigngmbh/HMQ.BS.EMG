@@ -1,25 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import L from "leaflet";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ExternalLink } from "lucide-react";
-import "leaflet/dist/leaflet.css";
-
-// Fix für Leaflet Marker Icons in Next.js
-const defaultIcon = L.icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-});
-
-L.Marker.prototype.options.icon = defaultIcon;
 
 interface LeafletMapProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -28,18 +12,52 @@ interface LeafletMapProps {
 
 export function LeafletMap({ einsaetze }: LeafletMapProps) {
   const [isMounted, setIsMounted] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [leafletComponents, setLeafletComponents] = useState<any>(null);
 
   useEffect(() => {
-    setIsMounted(true);
+    // Dynamischer Import von Leaflet nur auf dem Client
+    const loadLeaflet = async () => {
+      // CSS über Link-Tag laden
+      if (!document.querySelector('link[href*="leaflet.css"]')) {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+        document.head.appendChild(link);
+      }
+
+      const L = (await import("leaflet")).default;
+      const { MapContainer, TileLayer, Marker, Popup } = await import("react-leaflet");
+
+      // Fix für Leaflet Marker Icons in Next.js
+      const defaultIcon = L.icon({
+        iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+        iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+        shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41],
+      });
+
+      L.Marker.prototype.options.icon = defaultIcon;
+
+      setLeafletComponents({ MapContainer, TileLayer, Marker, Popup });
+      setIsMounted(true);
+    };
+
+    loadLeaflet();
   }, []);
 
-  if (!isMounted) {
+  if (!isMounted || !leafletComponents) {
     return (
       <div className="flex h-[600px] items-center justify-center rounded-lg border">
         <p className="text-muted-foreground">Karte wird geladen...</p>
       </div>
     );
   }
+
+  const { MapContainer, TileLayer, Marker, Popup } = leafletComponents;
 
   // Einsätze mit Koordinaten filtern
   const einsaetzeMitKoordinaten = einsaetze.filter(

@@ -176,26 +176,31 @@ export async function getWartungsart(id: string) {
 
 // Anstehende Wartungen (Service fällig)
 export async function getAnstehendeWartungen() {
-  const supabase = await createClient();
+  try {
+    const supabase = await createClient();
 
-  const heute = new Date().toISOString().split("T")[0];
+    const heute = new Date().toISOString().split("T")[0];
 
-  const { data, error } = await supabase
-    .from("geraete")
-    .select(`
-      id,
-      name,
-      naechster_service,
-      status:status(name)
-    `)
-    .not("naechster_service", "is", null)
-    .lte("naechster_service", heute)
-    .order("naechster_service", { ascending: true });
+    const { data, error } = await supabase
+      .from("geraete")
+      .select(`
+        id,
+        name,
+        naechster_service,
+        status:status(name)
+      `)
+      .not("naechster_service", "is", null)
+      .lte("naechster_service", heute)
+      .order("naechster_service", { ascending: true });
 
-  if (error) {
+    if (error) {
+      console.error("Fehler beim Laden der anstehenden Wartungen:", error);
+      return [];
+    }
+
+    return data || [];
+  } catch (error) {
     console.error("Fehler beim Laden der anstehenden Wartungen:", error);
-    throw new Error("Fehler beim Laden der anstehenden Wartungen");
+    return [];
   }
-
-  return data;
 }

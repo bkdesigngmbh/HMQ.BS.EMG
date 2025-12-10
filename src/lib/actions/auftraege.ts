@@ -24,20 +24,25 @@ export async function getAuftraege() {
 }
 
 export async function getAktiveAuftraege() {
-  const supabase = await createClient();
+  try {
+    const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .from("auftraege")
-    .select("*")
-    .eq("status", "aktiv")
-    .order("auftragsnummer", { ascending: true });
+    const { data, error } = await supabase
+      .from("auftraege")
+      .select("*")
+      .eq("status", "aktiv")
+      .order("auftragsnummer", { ascending: true });
 
-  if (error) {
+    if (error) {
+      console.error("Fehler beim Laden der aktiven Aufträge:", error);
+      return [];
+    }
+
+    return data || [];
+  } catch (error) {
     console.error("Fehler beim Laden der aktiven Aufträge:", error);
-    throw new Error("Fehler beim Laden der aktiven Aufträge");
+    return [];
   }
-
-  return data;
 }
 
 export async function getAuftrag(id: string) {

@@ -161,24 +161,29 @@ export async function deleteEinsatz(id: string) {
 }
 
 export async function getAktiveEinsaetze() {
-  const supabase = await createClient();
+  try {
+    const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .from("einsaetze")
-    .select(`
-      *,
-      geraet:geraete(*, status:status(*)),
-      auftrag:auftraege(*)
-    `)
-    .is("bis_effektiv", null)
-    .order("von_datum", { ascending: false });
+    const { data, error } = await supabase
+      .from("einsaetze")
+      .select(`
+        *,
+        geraet:geraete(*, status:status(*)),
+        auftrag:auftraege(*)
+      `)
+      .is("bis_effektiv", null)
+      .order("von_datum", { ascending: false });
 
-  if (error) {
+    if (error) {
+      console.error("Fehler beim Laden der aktiven Einsätze:", error);
+      return [];
+    }
+
+    return data || [];
+  } catch (error) {
     console.error("Fehler beim Laden der aktiven Einsätze:", error);
-    throw new Error("Fehler beim Laden der aktiven Einsätze");
+    return [];
   }
-
-  return data;
 }
 
 export async function getEinsaetzeByGeraet(geraetId: string) {
