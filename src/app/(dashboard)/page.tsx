@@ -6,14 +6,45 @@ import { getAnstehendeWartungen } from "@/lib/actions/wartungen";
 import { DashboardContent } from "./dashboard-content";
 import { LoadingSpinner } from "@/components/shared/loading-spinner";
 
+// Default values for when queries fail
+const defaultStatistiken = {
+  gesamt: 0,
+  imBuero: 0,
+  imEinsatz: 0,
+  inWartung: 0,
+  defekt: 0,
+};
+
 export default async function DashboardPage() {
-  const [statistiken, aktiveAuftraege, aktiveEinsaetze, anstehendeWartungen] =
-    await Promise.all([
-      getGeraeteStatistiken(),
-      getAktiveAuftraege(),
-      getAktiveEinsaetze(),
-      getAnstehendeWartungen(),
-    ]);
+  // Fetch data with error handling for each query
+  let statistiken = defaultStatistiken;
+  let aktiveAuftraege: Awaited<ReturnType<typeof getAktiveAuftraege>> = [];
+  let aktiveEinsaetze: Awaited<ReturnType<typeof getAktiveEinsaetze>> = [];
+  let anstehendeWartungen: Awaited<ReturnType<typeof getAnstehendeWartungen>> = [];
+
+  try {
+    statistiken = await getGeraeteStatistiken();
+  } catch (error) {
+    console.error("Fehler beim Laden der Statistiken:", error);
+  }
+
+  try {
+    aktiveAuftraege = await getAktiveAuftraege();
+  } catch (error) {
+    console.error("Fehler beim Laden der aktiven Aufträge:", error);
+  }
+
+  try {
+    aktiveEinsaetze = await getAktiveEinsaetze();
+  } catch (error) {
+    console.error("Fehler beim Laden der aktiven Einsätze:", error);
+  }
+
+  try {
+    anstehendeWartungen = await getAnstehendeWartungen();
+  } catch (error) {
+    console.error("Fehler beim Laden der anstehenden Wartungen:", error);
+  }
 
   return (
     <Suspense
