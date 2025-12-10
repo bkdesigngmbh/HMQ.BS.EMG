@@ -9,23 +9,28 @@ import {
 } from "@/lib/validations/einsatz";
 
 export async function getEinsaetze() {
-  const supabase = await createClient();
+  try {
+    const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .from("einsaetze")
-    .select(`
-      *,
-      geraet:geraete(*, status:status(*)),
-      auftrag:auftraege(*)
-    `)
-    .order("von_datum", { ascending: false });
+    const { data, error } = await supabase
+      .from("einsaetze")
+      .select(`
+        *,
+        geraet:geraete(*, status:status(*)),
+        auftrag:auftraege(*)
+      `)
+      .order("von_datum", { ascending: false });
 
-  if (error) {
+    if (error) {
+      console.error("Fehler beim Laden der Einsätze:", error);
+      return [];
+    }
+
+    return data || [];
+  } catch (error) {
     console.error("Fehler beim Laden der Einsätze:", error);
-    throw new Error("Fehler beim Laden der Einsätze");
+    return [];
   }
-
-  return data;
 }
 
 export async function getEinsatz(id: string) {
