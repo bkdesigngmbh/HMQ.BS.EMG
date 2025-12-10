@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/types/database";
@@ -16,52 +16,65 @@ export function useUser(): UseUserReturn {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const loadProfile = useCallback(async (userId: string) => {
-    const supabase = createClient();
-
-    try {
-      const { data: profileData, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", userId)
-        .single();
-
-      if (error) {
-        console.error("Fehler beim Laden des Profils:", error);
-        return null;
-      }
-
-      return profileData;
-    } catch (error) {
-      console.error("Fehler beim Laden des Profils:", error);
-      return null;
-    }
-  }, []);
-
   useEffect(() => {
+    // Einen einzigen Client für die gesamte Komponente verwenden
     const supabase = createClient();
     let mounted = true;
 
+    async function loadProfile(userId: string) {
+      try {
+        const { data: profileData, error } = await supabase
+          .from("profiles")
+          .select("id, email, name, rolle, created_at, updated_at")
+          .eq("id", userId)
+          .single();
+
+        if (error) {
+          console.error("Fehler beim Laden des Profils:", error.message, error.details);
+          return null;
+        }
+
+        return profileData as Profile;
+      } catch (error) {
+        console.error("Fehler beim Laden des Profils:", error);
+        return null;
+      }
+    }
+
     async function loadUser() {
       try {
-        const {
-          data: { user },
-          error: userError,
-        } = await supabase.auth.getUser();
+        // Zuerst Session prüfen
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
-        if (userError) {
-          console.error("Fehler beim Laden des Benutzers:", userError);
-          if (mounted) {
-            setIsLoading(false);
-          }
+        if (sessionError) {
+          console.error("Fehler beim Laden der Session:", sessionError);
+          if (mounted) setIsLoading(false);
           return;
         }
 
-        if (user && mounted) {
-          setUser(user);
-          const profileData = await loadProfile(user.id);
+        if (!session?.user) {
+          // Versuche getUser als Fallback
+          const { data: { user: authUser }, error: userError } = await supabase.auth.getUser();
+
+          if (userError || !authUser) {
+            if (mounted) setIsLoading(false);
+            return;
+          }
+
           if (mounted) {
-            setProfile(profileData);
+            setUser(authUser);
+            const profileData = await loadProfile(authUser.id);
+            if (mounted && profileData) {
+              setProfile(profileData);
+            }
+          }
+        } else {
+          if (mounted) {
+            setUser(session.user);
+            const profileData = await loadProfile(session.user.id);
+            if (mounted && profileData) {
+              setProfile(profileData);
+            }
           }
         }
       } catch (error) {
@@ -81,13 +94,17 @@ export function useUser(): UseUserReturn {
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (!mounted) return;
 
-      if (session?.user) {
-        setUser(session.user);
-        const profileData = await loadProfile(session.user.id);
-        if (mounted) {
-          setProfile(profileData);
+      if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED" || event === "INITIAL_SESSION") {
+        if (session?.user) {
+          setUser(session.user);
+          // Kurze Verzögerung um sicherzustellen dass die Session aktiv ist
+          await new Promise(resolve => setTimeout(resolve, 100));
+          const profileData = await loadProfile(session.user.id);
+          if (mounted && profileData) {
+            setProfile(profileData);
+          }
         }
-      } else {
+      } else if (event === "SIGNED_OUT") {
         setUser(null);
         setProfile(null);
       }
@@ -97,7 +114,7 @@ export function useUser(): UseUserReturn {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, [loadProfile]);
+  }, []);
 
   return { user, profile, isLoading };
 }
