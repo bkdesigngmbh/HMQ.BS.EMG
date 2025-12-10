@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { DataTable, Column } from "@/components/shared/data-table";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Badge } from "@/components/ui/badge";
+import { Box } from "lucide-react";
 import type { Geraet, Geraeteart, Geraetestatus } from "@/types/database";
 
 type GeraetMitRelationen = Geraet & {
@@ -22,6 +23,8 @@ export function GeraeteTable({ geraete, isLoading = false }: GeraeteTableProps) 
   const columns: Column<GeraetMitRelationen>[] = [
     {
       header: "Name",
+      accessorKey: "name",
+      sortable: true,
       cell: (geraet) => (
         <span className="font-medium">{geraet.name}</span>
       ),
@@ -29,6 +32,7 @@ export function GeraeteTable({ geraete, isLoading = false }: GeraeteTableProps) 
     {
       header: "Seriennummer",
       accessorKey: "seriennummer",
+      sortable: true,
     },
     {
       header: "Eigentum",
@@ -40,10 +44,22 @@ export function GeraeteTable({ geraete, isLoading = false }: GeraeteTableProps) 
     },
     {
       header: "Geräteart",
+      sortable: true,
+      sortFn: (a, b) => {
+        const aName = a.geraeteart?.name || "";
+        const bName = b.geraeteart?.name || "";
+        return aName.localeCompare(bName, "de-CH");
+      },
       cell: (geraet) => geraet.geraeteart?.name || "-",
     },
     {
       header: "Status",
+      sortable: true,
+      sortFn: (a, b) => {
+        const aName = a.status?.name || "";
+        const bName = b.status?.name || "";
+        return aName.localeCompare(bName, "de-CH");
+      },
       cell: (geraet) =>
         geraet.status ? (
           <StatusBadge status={geraet.status.name} color={geraet.status.farbe} />
@@ -53,6 +69,8 @@ export function GeraeteTable({ geraete, isLoading = false }: GeraeteTableProps) 
     },
     {
       header: "Client",
+      accessorKey: "client",
+      sortable: true,
       cell: (geraet) => geraet.client || "-",
     },
   ];
@@ -64,6 +82,7 @@ export function GeraeteTable({ geraete, isLoading = false }: GeraeteTableProps) 
       isLoading={isLoading}
       emptyMessage="Keine Geräte vorhanden"
       emptyDescription="Erstellen Sie ein neues Gerät, um zu beginnen."
+      emptyIcon={<Box className="h-6 w-6 text-muted-foreground" />}
       onRowClick={(geraet) => router.push(`/geraete/${geraet.id}`)}
     />
   );
