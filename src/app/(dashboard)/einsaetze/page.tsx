@@ -5,6 +5,8 @@ import { getAktiveAuftraege } from "@/lib/actions/auftraege";
 import { EinsaetzePageClient } from "./page-client";
 import { LoadingSpinner } from "@/components/shared/loading-spinner";
 
+export const dynamic = "force-dynamic";
+
 export default async function EinsaetzePage() {
   // Fetch data with error handling
   let einsaetze: Awaited<ReturnType<typeof getEinsaetze>> = [];

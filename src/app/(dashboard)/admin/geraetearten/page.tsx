@@ -3,6 +3,8 @@ import { getGeraetearten } from "@/lib/actions/admin";
 import { GeraeteartenPageClient } from "./page-client";
 import { LoadingSpinner } from "@/components/shared/loading-spinner";
 
+export const dynamic = "force-dynamic";
+
 export default async function GeraeteartenPage() {
   let geraetearten: Awaited<ReturnType<typeof getGeraetearten>> = [];
 

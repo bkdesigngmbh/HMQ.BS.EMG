@@ -3,6 +3,8 @@ import { getEinsatz } from "@/lib/actions/einsaetze";
 import { getGeraetestatus } from "@/lib/actions/geraete";
 import { EinsatzDetailClient } from "./page-client";
 
+export const dynamic = "force-dynamic";
+
 interface PageProps {
   params: Promise<{ id: string }>;
 }

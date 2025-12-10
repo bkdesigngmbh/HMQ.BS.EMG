@@ -6,6 +6,8 @@ import { getAnstehendeWartungen } from "@/lib/actions/wartungen";
 import { DashboardContent } from "./dashboard-content";
 import { LoadingSpinner } from "@/components/shared/loading-spinner";
 
+export const dynamic = "force-dynamic";
+
 // Default values for when queries fail
 const defaultStatistiken = {
   gesamt: 0,
