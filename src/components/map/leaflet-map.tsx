@@ -61,7 +61,7 @@ export function LeafletMap({ einsaetze }: LeafletMapProps) {
 
   // Einsätze mit Koordinaten filtern
   const einsaetzeMitKoordinaten = einsaetze.filter(
-    (e) => e.lat !== null && e.lng !== null
+    (e) => e.koordinaten_lat !== null && e.koordinaten_lng !== null
   );
 
   // Schweiz-Zentrum als Standard
@@ -71,7 +71,7 @@ export function LeafletMap({ einsaetze }: LeafletMapProps) {
   // Wenn Einsätze vorhanden sind, zentrieren wir auf den ersten
   const center: [number, number] =
     einsaetzeMitKoordinaten.length > 0
-      ? [einsaetzeMitKoordinaten[0].lat!, einsaetzeMitKoordinaten[0].lng!]
+      ? [einsaetzeMitKoordinaten[0].koordinaten_lat!, einsaetzeMitKoordinaten[0].koordinaten_lng!]
       : defaultCenter;
 
   const formatDate = (dateStr: string | null) => {
@@ -92,7 +92,7 @@ export function LeafletMap({ einsaetze }: LeafletMapProps) {
       />
 
       {einsaetzeMitKoordinaten.map((einsatz) => (
-        <Marker key={einsatz.id} position={[einsatz.lat!, einsatz.lng!]}>
+        <Marker key={einsatz.id} position={[einsatz.koordinaten_lat!, einsatz.koordinaten_lng!]}>
           <Popup>
             <div className="min-w-[200px]">
               <div className="font-medium text-lg">{einsatz.geraet.name}</div>

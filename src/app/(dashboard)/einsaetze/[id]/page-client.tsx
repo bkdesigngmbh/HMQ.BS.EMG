@@ -135,9 +135,9 @@ export function EinsatzDetailClient({
             {getAdresse() ? (
               <>
                 <p className="font-medium">{getAdresse()}</p>
-                {einsatz.lat && einsatz.lng && (
+                {einsatz.koordinaten_lat && einsatz.koordinaten_lng && (
                   <p className="text-sm text-muted-foreground">
-                    Koordinaten: {einsatz.lat.toFixed(6)}, {einsatz.lng.toFixed(6)}
+                    Koordinaten: {einsatz.koordinaten_lat.toFixed(6)}, {einsatz.koordinaten_lng.toFixed(6)}
                   </p>
                 )}
               </>

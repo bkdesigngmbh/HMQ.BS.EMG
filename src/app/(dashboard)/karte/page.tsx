@@ -26,7 +26,7 @@ export default async function KartePage() {
   const aktiveEinsaetze: any[] = await getAktiveEinsaetze();
 
   const einsaetzeMitKoordinaten = aktiveEinsaetze.filter(
-    (e) => e.lat !== null && e.lng !== null
+    (e) => e.koordinaten_lat !== null && e.koordinaten_lng !== null
   );
 
   return (
@@ -75,7 +75,7 @@ export default async function KartePage() {
             <CardContent>
               <div className="space-y-2">
                 {aktiveEinsaetze
-                  .filter((e) => e.lat === null || e.lng === null)
+                  .filter((e) => e.koordinaten_lat === null || e.koordinaten_lng === null)
                   .map((einsatz) => (
                     <div
                       key={einsatz.id}
