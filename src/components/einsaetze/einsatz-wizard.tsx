@@ -65,6 +65,7 @@ export function EinsatzWizard({
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<GeocodingResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<EinsatzFormValues>({
     resolver: zodResolver(einsatzSchema),
@@ -85,6 +86,7 @@ export function EinsatzWizard({
   useEffect(() => {
     if (open) {
       setStep(1);
+      setError(null);
       form.reset({
         geraet_id: "",
         auftrag_id: "",
@@ -139,11 +141,14 @@ export function EinsatzWizard({
   };
 
   const handleSubmit = async (values: EinsatzFormValues) => {
+    setError(null);
     try {
       await onSave(values);
       onOpenChange(false);
-    } catch {
-      // Error handling is done in parent component
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Ein Fehler ist aufgetreten";
+      setError(message);
+      console.error("Einsatz erstellen fehlgeschlagen:", err);
     }
   };
 
@@ -374,6 +379,10 @@ export function EinsatzWizard({
                   </p>
                 )}
               </>
+            )}
+
+            {error && (
+              <p className="text-sm text-destructive">{error}</p>
             )}
 
             <DialogFooter>
