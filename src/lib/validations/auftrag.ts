@@ -17,8 +17,9 @@ export type AuftragFormValues = z.infer<typeof auftragSchema>;
 
 export function transformAuftragValues(values: AuftragFormValues) {
   return {
-    ...values,
+    auftragsnummer: values.auftragsnummer,
     auftragsort: values.auftragsort || null,
-    bezeichnung: values.bezeichnung || null,
+    auftragsbezeichnung: values.bezeichnung || null,
+    status: values.status,
   };
 }
