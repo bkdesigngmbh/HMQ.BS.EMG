@@ -16,7 +16,7 @@ interface Profile {
 
 interface DashboardShellProps {
   children: React.ReactNode;
-  profile: Profile | null;
+  profile: Profile; // Nicht nullable - Layout redirected wenn kein Profil
 }
 
 export function DashboardShell({ children, profile }: DashboardShellProps) {
