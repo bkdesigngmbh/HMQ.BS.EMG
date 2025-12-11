@@ -74,7 +74,7 @@ export async function createEinsatz(values: EinsatzFormValues) {
   const { data: statusData } = await supabase
     .from("status")
     .select("id")
-    .eq("bezeichnung", "im Einsatz")
+    .ilike("bezeichnung", "im einsatz")
     .single();
 
   if (statusData) {
