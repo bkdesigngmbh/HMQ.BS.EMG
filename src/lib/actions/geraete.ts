@@ -180,15 +180,27 @@ export async function getVerfuegbareGeraete() {
   try {
     const supabase = await createClient();
 
-    // Alle Geräte mit Status "im Büro" laden
+    // Erst Status-ID für "Im Büro" holen (case-insensitive)
+    const { data: statusData } = await supabase
+      .from("status")
+      .select("id")
+      .ilike("bezeichnung", "im büro")
+      .single();
+
+    if (!statusData) {
+      console.error("Status 'Im Büro' nicht gefunden");
+      return [];
+    }
+
+    // Geräte mit diesem Status laden
     const { data, error } = await supabase
       .from("geraete")
       .select(`
         *,
         geraeteart:geraetearten(*),
-        status:status!inner(*)
+        status:status(*)
       `)
-      .eq("status.bezeichnung", "im Büro")
+      .eq("status_id", statusData.id)
       .order("name", { ascending: true });
 
     if (error) {
