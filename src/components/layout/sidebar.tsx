@@ -84,7 +84,7 @@ const adminItems: NavItem[] = [
 ];
 
 interface SidebarProps {
-  profile: Profile | null;
+  profile: Profile; // Nicht nullable - Layout redirected wenn kein Profil
   isMobileOpen?: boolean;
   onMobileClose?: () => void;
 }
@@ -95,7 +95,7 @@ export function Sidebar({ profile, isMobileOpen, onMobileClose }: SidebarProps) 
   const router = useRouter();
 
   // Admin-Check basierend auf dem serverseitig geladenen Profil
-  const isAdmin = profile?.rolle === "admin";
+  const isAdmin = profile.rolle === "admin";
 
   useEffect(() => {
     const saved = localStorage.getItem(SIDEBAR_COLLAPSED_KEY);
@@ -226,7 +226,7 @@ export function Sidebar({ profile, isMobileOpen, onMobileClose }: SidebarProps) 
                     </div>
                   </TooltipTrigger>
                   <TooltipContent side="right">
-                    <p>{profile?.name || profile?.email || "Benutzer"}</p>
+                    <p>{profile.name || profile.email}</p>
                   </TooltipContent>
                 </Tooltip>
                 <Tooltip>
@@ -251,10 +251,10 @@ export function Sidebar({ profile, isMobileOpen, onMobileClose }: SidebarProps) 
                   </div>
                   <div className="flex-1 overflow-hidden">
                     <p className="truncate text-sm font-medium">
-                      {profile?.name || "Benutzer"}
+                      {profile.name || "Benutzer"}
                     </p>
                     <p className="truncate text-xs text-muted-foreground">
-                      {profile?.email}
+                      {profile.email}
                     </p>
                   </div>
                 </div>
