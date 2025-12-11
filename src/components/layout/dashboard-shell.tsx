@@ -6,7 +6,20 @@ import { cn } from "@/lib/utils";
 
 const SIDEBAR_COLLAPSED_KEY = "sidebar-collapsed";
 
-export function DashboardShell({ children }: { children: React.ReactNode }) {
+// Profil-Typ für die Props
+interface Profile {
+  id: string;
+  email: string;
+  name: string | null;
+  rolle: "admin" | "user";
+}
+
+interface DashboardShellProps {
+  children: React.ReactNode;
+  profile: Profile | null;
+}
+
+export function DashboardShell({ children, profile }: DashboardShellProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
