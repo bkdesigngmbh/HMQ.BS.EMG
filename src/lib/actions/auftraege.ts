@@ -85,7 +85,7 @@ export async function getAuftragMitEinsaetze(id: string) {
       geraet:geraete(*, status:status(*))
     `)
     .eq("auftrag_id", id)
-    .order("von_datum", { ascending: false });
+    .order("von", { ascending: false });
 
   if (einsaetzeError) {
     console.error("Fehler beim Laden der Einsätze:", einsaetzeError);

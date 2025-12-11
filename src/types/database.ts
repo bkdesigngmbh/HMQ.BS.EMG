@@ -90,20 +90,20 @@ export interface Database {
       geraetearten: {
         Row: {
           id: string;
-          name: string;
-          beschreibung: string | null;
+          bezeichnung: string;
+          sortierung: number | null;
           created_at: string;
         };
         Insert: {
           id?: string;
-          name: string;
-          beschreibung?: string | null;
+          bezeichnung: string;
+          sortierung?: number | null;
           created_at?: string;
         };
         Update: {
           id?: string;
-          name?: string;
-          beschreibung?: string | null;
+          bezeichnung?: string;
+          sortierung?: number | null;
           created_at?: string;
         };
         Relationships: [];
@@ -111,20 +111,23 @@ export interface Database {
       status: {
         Row: {
           id: string;
-          name: string;
+          bezeichnung: string;
           farbe: string;
+          sortierung: number | null;
           created_at: string;
         };
         Insert: {
           id?: string;
-          name: string;
+          bezeichnung: string;
           farbe?: string;
+          sortierung?: number | null;
           created_at?: string;
         };
         Update: {
           id?: string;
-          name?: string;
+          bezeichnung?: string;
           farbe?: string;
+          sortierung?: number | null;
           created_at?: string;
         };
         Relationships: [];
@@ -164,7 +167,7 @@ export interface Database {
           id: string;
           geraet_id: string;
           auftrag_id: string;
-          von_datum: string;
+          von: string;
           bis_provisorisch: string | null;
           bis_effektiv: string | null;
           strasse: string | null;
@@ -180,7 +183,7 @@ export interface Database {
           id?: string;
           geraet_id: string;
           auftrag_id: string;
-          von_datum: string;
+          von: string;
           bis_provisorisch?: string | null;
           bis_effektiv?: string | null;
           strasse?: string | null;
@@ -196,7 +199,7 @@ export interface Database {
           id?: string;
           geraet_id?: string;
           auftrag_id?: string;
-          von_datum?: string;
+          von?: string;
           bis_provisorisch?: string | null;
           bis_effektiv?: string | null;
           strasse?: string | null;
@@ -243,23 +246,20 @@ export interface Database {
       wartungsarten: {
         Row: {
           id: string;
-          name: string;
-          beschreibung: string | null;
-          intervall_monate: number | null;
+          bezeichnung: string;
+          sortierung: number | null;
           created_at: string;
         };
         Insert: {
           id?: string;
-          name: string;
-          beschreibung?: string | null;
-          intervall_monate?: number | null;
+          bezeichnung: string;
+          sortierung?: number | null;
           created_at?: string;
         };
         Update: {
           id?: string;
-          name?: string;
-          beschreibung?: string | null;
-          intervall_monate?: number | null;
+          bezeichnung?: string;
+          sortierung?: number | null;
           created_at?: string;
         };
         Relationships: [];

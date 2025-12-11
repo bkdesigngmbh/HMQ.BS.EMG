@@ -19,7 +19,7 @@ export async function getEinsaetze() {
         geraet:geraete(*, status:status(*)),
         auftrag:auftraege(*)
       `)
-      .order("von_datum", { ascending: false });
+      .order("von", { ascending: false });
 
     if (error) {
       console.error("Fehler beim Laden der Einsätze:", error);
@@ -74,7 +74,7 @@ export async function createEinsatz(values: EinsatzFormValues) {
   const { data: statusData } = await supabase
     .from("status")
     .select("id")
-    .eq("name", "im Einsatz")
+    .eq("bezeichnung", "im Einsatz")
     .single();
 
   if (statusData) {
@@ -177,7 +177,7 @@ export async function getAktiveEinsaetze() {
         auftrag:auftraege(*)
       `)
       .is("bis_effektiv", null)
-      .order("von_datum", { ascending: false });
+      .order("von", { ascending: false });
 
     if (error) {
       console.error("Fehler beim Laden der aktiven Einsätze:", error);
@@ -201,7 +201,7 @@ export async function getEinsaetzeByGeraet(geraetId: string) {
       auftrag:auftraege(*)
     `)
     .eq("geraet_id", geraetId)
-    .order("von_datum", { ascending: false });
+    .order("von", { ascending: false });
 
   if (error) {
     console.error("Fehler beim Laden der Einsätze:", error);
@@ -221,7 +221,7 @@ export async function getEinsaetzeByAuftrag(auftragId: string) {
       geraet:geraete(*, status:status(*))
     `)
     .eq("auftrag_id", auftragId)
-    .order("von_datum", { ascending: false });
+    .order("von", { ascending: false });
 
   if (error) {
     console.error("Fehler beim Laden der Einsätze:", error);

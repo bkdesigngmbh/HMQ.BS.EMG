@@ -171,13 +171,13 @@ export function EinsatzDetailClient({
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Typ</span>
-              <span>{einsatz.geraet.geraeteart?.name || "-"}</span>
+              <span>{einsatz.geraet.geraeteart?.bezeichnung || "-"}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Status</span>
               {einsatz.geraet.status ? (
                 <StatusBadge
-                  status={einsatz.geraet.status.name}
+                  status={einsatz.geraet.status.bezeichnung}
                   color={einsatz.geraet.status.farbe}
                 />
               ) : (

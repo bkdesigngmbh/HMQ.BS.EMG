@@ -35,9 +35,8 @@ import {
 
 interface Wartungsart {
   id: string;
-  name: string;
-  beschreibung: string | null;
-  intervall_monate: number | null;
+  bezeichnung: string;
+  sortierung: number | null;
 }
 
 interface WartungsartenPageClientProps {
@@ -70,9 +69,9 @@ export function WartungsartenPageClient({ initialWartungsarten }: WartungsartenP
 
   const handleOpenEdit = (wartungsart: Wartungsart) => {
     setEditingWartungsart(wartungsart);
-    setFormName(wartungsart.name);
-    setFormBeschreibung(wartungsart.beschreibung || "");
-    setFormIntervall(wartungsart.intervall_monate?.toString() || "");
+    setFormName(wartungsart.bezeichnung);
+    setFormBeschreibung("");
+    setFormIntervall("");
     setError(null);
     setDialogOpen(true);
   };
@@ -93,19 +92,13 @@ export function WartungsartenPageClient({ initialWartungsarten }: WartungsartenP
     setError(null);
 
     try {
-      const intervall = formIntervall.trim() ? parseInt(formIntervall, 10) : undefined;
-
       if (editingWartungsart) {
         await updateWartungsart(editingWartungsart.id, {
-          name: formName.trim(),
-          beschreibung: formBeschreibung.trim() || undefined,
-          intervall_monate: intervall,
+          bezeichnung: formName.trim(),
         });
       } else {
         await createWartungsart({
-          name: formName.trim(),
-          beschreibung: formBeschreibung.trim() || undefined,
-          intervall_monate: intervall,
+          bezeichnung: formName.trim(),
         });
       }
       setDialogOpen(false);
@@ -132,14 +125,6 @@ export function WartungsartenPageClient({ initialWartungsarten }: WartungsartenP
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const formatIntervall = (monate: number | null) => {
-    if (!monate) return "-";
-    if (monate === 1) return "1 Monat";
-    if (monate === 12) return "1 Jahr";
-    if (monate % 12 === 0) return `${monate / 12} Jahre`;
-    return `${monate} Monate`;
   };
 
   return (
@@ -178,20 +163,18 @@ export function WartungsartenPageClient({ initialWartungsarten }: WartungsartenP
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Beschreibung</TableHead>
-                  <TableHead>Intervall</TableHead>
+                  <TableHead>Bezeichnung</TableHead>
+                  <TableHead>Sortierung</TableHead>
                   <TableHead className="w-[100px]">Aktionen</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {wartungsarten.map((wartungsart) => (
                   <TableRow key={wartungsart.id}>
-                    <TableCell className="font-medium">{wartungsart.name}</TableCell>
+                    <TableCell className="font-medium">{wartungsart.bezeichnung}</TableCell>
                     <TableCell className="text-muted-foreground">
-                      {wartungsart.beschreibung || "-"}
+                      {wartungsart.sortierung || "-"}
                     </TableCell>
-                    <TableCell>{formatIntervall(wartungsart.intervall_monate)}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1">
                         <Button
@@ -290,7 +273,7 @@ export function WartungsartenPageClient({ initialWartungsarten }: WartungsartenP
             <DialogHeader>
               <DialogTitle>Wartungsart löschen</DialogTitle>
               <DialogDescription>
-                Möchten Sie die Wartungsart &quot;{deletingWartungsart?.name}&quot; wirklich löschen?
+                Möchten Sie die Wartungsart &quot;{deletingWartungsart?.bezeichnung}&quot; wirklich löschen?
                 Diese Aktion kann nicht rückgängig gemacht werden.
               </DialogDescription>
             </DialogHeader>

@@ -164,7 +164,7 @@ export async function getGeraeteByStatus(statusName: string) {
       geraeteart:geraetearten(*),
       status:status!inner(*)
     `)
-    .eq("status.name", statusName)
+    .eq("status.bezeichnung", statusName)
     .order("name", { ascending: true });
 
   if (error) {
@@ -188,7 +188,7 @@ export async function getVerfuegbareGeraete() {
         geraeteart:geraetearten(*),
         status:status!inner(*)
       `)
-      .eq("status.name", "im Büro")
+      .eq("status.bezeichnung", "im Büro")
       .order("name", { ascending: true });
 
     if (error) {
@@ -211,7 +211,7 @@ export async function getGeraetearten() {
     const { data, error } = await supabase
       .from("geraetearten")
       .select("*")
-      .order("name", { ascending: true });
+      .order("sortierung", { ascending: true });
 
     if (error) {
       console.error("Fehler beim Laden der Gerätearten:", error);
@@ -232,7 +232,7 @@ export async function getGeraetestatus() {
     const { data, error } = await supabase
       .from("status")
       .select("*")
-      .order("name", { ascending: true });
+      .order("sortierung", { ascending: true });
 
     if (error) {
       console.error("Fehler beim Laden der Status:", error);
@@ -264,7 +264,7 @@ export async function getGeraeteStatistiken() {
       .from("geraete")
       .select(`
         id,
-        status:status(name)
+        status:status(bezeichnung)
       `);
 
     if (error) {
@@ -281,7 +281,7 @@ export async function getGeraeteStatistiken() {
     };
 
     geraete?.forEach((g) => {
-      const statusName = (g.status as unknown as { name: string } | null)?.name;
+      const statusName = (g.status as unknown as { bezeichnung: string } | null)?.bezeichnung;
       switch (statusName) {
         case "im Büro":
           statistiken.imBuero++;

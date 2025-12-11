@@ -71,7 +71,7 @@ export function EinsatzWizard({
     defaultValues: {
       geraet_id: "",
       auftrag_id: "",
-      von_datum: new Date().toISOString().split("T")[0],
+      von: new Date().toISOString().split("T")[0],
       bis_provisorisch: "",
       strasse: "",
       plz: "",
@@ -88,7 +88,7 @@ export function EinsatzWizard({
       form.reset({
         geraet_id: "",
         auftrag_id: "",
-        von_datum: new Date().toISOString().split("T")[0],
+        von: new Date().toISOString().split("T")[0],
         bis_provisorisch: "",
         strasse: "",
         plz: "",
@@ -148,7 +148,7 @@ export function EinsatzWizard({
   };
 
   const canProceedStep1 = form.watch("geraet_id") && form.watch("auftrag_id");
-  const canProceedStep2 = form.watch("von_datum");
+  const canProceedStep2 = form.watch("von");
 
   const stepTitles = ["Gerät & Auftrag", "Zeitraum", "Standort"];
 
@@ -243,7 +243,7 @@ export function EinsatzWizard({
               <>
                 <FormField
                   control={form.control}
-                  name="von_datum"
+                  name="von"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Startdatum *</FormLabel>

@@ -46,23 +46,23 @@ export function GeraeteTable({ geraete, isLoading = false }: GeraeteTableProps) 
       header: "Geräteart",
       sortable: true,
       sortFn: (a, b) => {
-        const aName = a.geraeteart?.name || "";
-        const bName = b.geraeteart?.name || "";
+        const aName = a.geraeteart?.bezeichnung || "";
+        const bName = b.geraeteart?.bezeichnung || "";
         return aName.localeCompare(bName, "de-CH");
       },
-      cell: (geraet) => geraet.geraeteart?.name || "-",
+      cell: (geraet) => geraet.geraeteart?.bezeichnung || "-",
     },
     {
       header: "Status",
       sortable: true,
       sortFn: (a, b) => {
-        const aName = a.status?.name || "";
-        const bName = b.status?.name || "";
+        const aName = a.status?.bezeichnung || "";
+        const bName = b.status?.bezeichnung || "";
         return aName.localeCompare(bName, "de-CH");
       },
       cell: (geraet) =>
         geraet.status ? (
-          <StatusBadge status={geraet.status.name} color={geraet.status.farbe} />
+          <StatusBadge status={geraet.status.bezeichnung} color={geraet.status.farbe} />
         ) : (
           "-"
         ),
