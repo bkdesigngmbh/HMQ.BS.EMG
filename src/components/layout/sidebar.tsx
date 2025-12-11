@@ -84,11 +84,12 @@ const adminItems: NavItem[] = [
 ];
 
 interface SidebarProps {
+  profile: Profile | null;
   isMobileOpen?: boolean;
   onMobileClose?: () => void;
 }
 
-export function Sidebar({ isMobileOpen, onMobileClose }: SidebarProps) {
+export function Sidebar({ profile, isMobileOpen, onMobileClose }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
   const router = useRouter();

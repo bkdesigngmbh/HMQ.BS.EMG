@@ -78,7 +78,7 @@ export function DashboardShell({ children, profile }: DashboardShellProps) {
       <MobileHeader onMenuClick={handleMobileOpen} />
 
       {/* Sidebar */}
-      <Sidebar isMobileOpen={isMobileOpen} onMobileClose={handleMobileClose} />
+      <Sidebar profile={profile} isMobileOpen={isMobileOpen} onMobileClose={handleMobileClose} />
 
       {/* Main Content */}
       <main
