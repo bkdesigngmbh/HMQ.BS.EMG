@@ -3,7 +3,7 @@ import { z } from "zod";
 export const einsatzSchema = z.object({
   geraet_id: z.string().uuid("Bitte wählen Sie ein Gerät"),
   auftrag_id: z.string().uuid("Bitte wählen Sie einen Auftrag"),
-  von_datum: z.string().min(1, "Von-Datum ist erforderlich"),
+  von: z.string().min(1, "Von-Datum ist erforderlich"),
   bis_provisorisch: z.string().nullable().optional(),
   strasse: z.string().max(255).nullable().optional(),
   plz: z.string().max(10).nullable().optional(),

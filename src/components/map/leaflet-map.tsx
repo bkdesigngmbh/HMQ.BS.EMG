@@ -112,7 +112,7 @@ export function LeafletMap({ einsaetze }: LeafletMapProps) {
                 </div>
                 <div className="text-sm">
                   <span className="text-gray-500">Seit:</span>{" "}
-                  {formatDate(einsatz.von_datum)}
+                  {formatDate(einsatz.von)}
                 </div>
                 {einsatz.bis_provisorisch && (
                   <div className="text-sm">

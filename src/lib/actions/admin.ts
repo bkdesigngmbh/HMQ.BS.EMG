@@ -13,7 +13,7 @@ export async function getGeraetestatus() {
   const { data, error } = await supabase
     .from("status")
     .select("*")
-    .order("name");
+    .order("sortierung");
 
   if (error) {
     throw new Error("Fehler beim Laden der Status");
@@ -22,7 +22,7 @@ export async function getGeraetestatus() {
   return data;
 }
 
-export async function createGeraetestatus(values: { name: string; farbe: string }) {
+export async function createGeraetestatus(values: { bezeichnung: string; farbe: string }) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -33,7 +33,7 @@ export async function createGeraetestatus(values: { name: string; farbe: string 
 
   if (error) {
     if (error.code === "23505") {
-      throw new Error("Ein Status mit diesem Namen existiert bereits");
+      throw new Error("Ein Status mit dieser Bezeichnung existiert bereits");
     }
     throw new Error("Fehler beim Erstellen des Status");
   }
@@ -43,7 +43,7 @@ export async function createGeraetestatus(values: { name: string; farbe: string 
   return data;
 }
 
-export async function updateGeraetestatus(id: string, values: { name: string; farbe: string }) {
+export async function updateGeraetestatus(id: string, values: { bezeichnung: string; farbe: string }) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -55,7 +55,7 @@ export async function updateGeraetestatus(id: string, values: { name: string; fa
 
   if (error) {
     if (error.code === "23505") {
-      throw new Error("Ein Status mit diesem Namen existiert bereits");
+      throw new Error("Ein Status mit dieser Bezeichnung existiert bereits");
     }
     throw new Error("Fehler beim Aktualisieren des Status");
   }
@@ -109,7 +109,7 @@ export async function getGeraetearten() {
   const { data, error } = await supabase
     .from("geraetearten")
     .select("*")
-    .order("name");
+    .order("sortierung");
 
   if (error) {
     throw new Error("Fehler beim Laden der Gerätearten");
@@ -118,7 +118,7 @@ export async function getGeraetearten() {
   return data;
 }
 
-export async function createGeraeteart(values: { name: string; beschreibung?: string }) {
+export async function createGeraeteart(values: { bezeichnung: string }) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -129,7 +129,7 @@ export async function createGeraeteart(values: { name: string; beschreibung?: st
 
   if (error) {
     if (error.code === "23505") {
-      throw new Error("Eine Geräteart mit diesem Namen existiert bereits");
+      throw new Error("Eine Geräteart mit dieser Bezeichnung existiert bereits");
     }
     throw new Error("Fehler beim Erstellen der Geräteart");
   }
@@ -139,7 +139,7 @@ export async function createGeraeteart(values: { name: string; beschreibung?: st
   return data;
 }
 
-export async function updateGeraeteart(id: string, values: { name: string; beschreibung?: string }) {
+export async function updateGeraeteart(id: string, values: { bezeichnung: string }) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -151,7 +151,7 @@ export async function updateGeraeteart(id: string, values: { name: string; besch
 
   if (error) {
     if (error.code === "23505") {
-      throw new Error("Eine Geräteart mit diesem Namen existiert bereits");
+      throw new Error("Eine Geräteart mit dieser Bezeichnung existiert bereits");
     }
     throw new Error("Fehler beim Aktualisieren der Geräteart");
   }
@@ -205,7 +205,7 @@ export async function getWartungsarten() {
   const { data, error } = await supabase
     .from("wartungsarten")
     .select("*")
-    .order("name");
+    .order("sortierung");
 
   if (error) {
     throw new Error("Fehler beim Laden der Wartungsarten");
@@ -214,11 +214,7 @@ export async function getWartungsarten() {
   return data;
 }
 
-export async function createWartungsart(values: {
-  name: string;
-  beschreibung?: string;
-  intervall_monate?: number;
-}) {
+export async function createWartungsart(values: { bezeichnung: string }) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -229,7 +225,7 @@ export async function createWartungsart(values: {
 
   if (error) {
     if (error.code === "23505") {
-      throw new Error("Eine Wartungsart mit diesem Namen existiert bereits");
+      throw new Error("Eine Wartungsart mit dieser Bezeichnung existiert bereits");
     }
     throw new Error("Fehler beim Erstellen der Wartungsart");
   }
@@ -239,11 +235,7 @@ export async function createWartungsart(values: {
   return data;
 }
 
-export async function updateWartungsart(id: string, values: {
-  name: string;
-  beschreibung?: string;
-  intervall_monate?: number;
-}) {
+export async function updateWartungsart(id: string, values: { bezeichnung: string }) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -255,7 +247,7 @@ export async function updateWartungsart(id: string, values: {
 
   if (error) {
     if (error.code === "23505") {
-      throw new Error("Eine Wartungsart mit diesem Namen existiert bereits");
+      throw new Error("Eine Wartungsart mit dieser Bezeichnung existiert bereits");
     }
     throw new Error("Fehler beim Aktualisieren der Wartungsart");
   }

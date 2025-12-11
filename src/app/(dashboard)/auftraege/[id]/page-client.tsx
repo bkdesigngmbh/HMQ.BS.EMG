@@ -157,11 +157,11 @@ export function AuftraegeDetailClient({ auftrag }: AuftraegeDetailClientProps) {
                     <div className="text-right">
                       <p className="text-sm flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
-                        seit {formatDate(einsatz.von_datum)}
+                        seit {formatDate(einsatz.von)}
                       </p>
                       {einsatz.geraet.status && (
                         <StatusBadge
-                          status={einsatz.geraet.status.name}
+                          status={einsatz.geraet.status.bezeichnung}
                           color={einsatz.geraet.status.farbe}
                         />
                       )}
@@ -204,7 +204,7 @@ export function AuftraegeDetailClient({ auftrag }: AuftraegeDetailClientProps) {
                     </div>
                     <div className="text-right">
                       <p className="text-sm">
-                        {formatDate(einsatz.von_datum)} -{" "}
+                        {formatDate(einsatz.von)} -{" "}
                         {formatDate(einsatz.bis_effektiv)}
                       </p>
                     </div>

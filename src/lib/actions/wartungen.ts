@@ -64,20 +64,6 @@ export async function createWartung(values: WartungFormValues) {
     throw new Error("Fehler beim Erstellen der Wartung");
   }
 
-  // Nächsten Service-Termin am Gerät aktualisieren
-  const wartungsart = await getWartungsart(values.wartungsart_id || "");
-  if (wartungsart?.intervall_monate) {
-    const naechsterService = new Date(values.datum);
-    naechsterService.setMonth(
-      naechsterService.getMonth() + wartungsart.intervall_monate
-    );
-
-    await supabase
-      .from("geraete")
-      .update({ naechster_service: naechsterService.toISOString().split("T")[0] })
-      .eq("id", values.geraet_id);
-  }
-
   revalidatePath("/geraete");
   revalidatePath(`/geraete/${values.geraet_id}`);
   return data;
@@ -146,7 +132,7 @@ export async function getWartungsarten() {
   const { data, error } = await supabase
     .from("wartungsarten")
     .select("*")
-    .order("name", { ascending: true });
+    .order("sortierung", { ascending: true });
 
   if (error) {
     console.error("Fehler beim Laden der Wartungsarten:", error);
@@ -187,7 +173,7 @@ export async function getAnstehendeWartungen() {
         id,
         name,
         naechster_service,
-        status:status(name)
+        status:status(bezeichnung)
       `)
       .not("naechster_service", "is", null)
       .lte("naechster_service", heute)

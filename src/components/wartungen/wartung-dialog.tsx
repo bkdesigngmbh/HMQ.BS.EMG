@@ -111,9 +111,7 @@ export function WartungDialog({
                     <SelectContent>
                       {wartungsarten.map((art) => (
                         <SelectItem key={art.id} value={art.id}>
-                          {art.name}
-                          {art.intervall_monate &&
-                            ` (alle ${art.intervall_monate} Monate)`}
+                          {art.bezeichnung}
                         </SelectItem>
                       ))}
                     </SelectContent>

@@ -51,11 +51,11 @@ export function EinsaetzeTable({
       header: "Von",
       sortable: true,
       sortFn: (a, b) => {
-        const aDate = new Date(a.von_datum).getTime();
-        const bDate = new Date(b.von_datum).getTime();
+        const aDate = new Date(a.von).getTime();
+        const bDate = new Date(b.von).getTime();
         return aDate - bDate;
       },
-      cell: (einsatz) => formatDate(einsatz.von_datum),
+      cell: (einsatz) => formatDate(einsatz.von),
     },
     {
       header: "Bis",
@@ -80,14 +80,14 @@ export function EinsaetzeTable({
       header: "Geräte-Status",
       sortable: true,
       sortFn: (a, b) => {
-        const aName = a.geraet.status?.name || "";
-        const bName = b.geraet.status?.name || "";
+        const aName = a.geraet.status?.bezeichnung || "";
+        const bName = b.geraet.status?.bezeichnung || "";
         return aName.localeCompare(bName, "de-CH");
       },
       cell: (einsatz) =>
         einsatz.geraet.status ? (
           <StatusBadge
-            status={einsatz.geraet.status.name}
+            status={einsatz.geraet.status.bezeichnung}
             color={einsatz.geraet.status.farbe}
             size="sm"
           />

@@ -150,7 +150,7 @@ export function DashboardContent({
                         </p>
                         {einsatz.geraet.status && (
                           <StatusBadge
-                            status={einsatz.geraet.status.name}
+                            status={einsatz.geraet.status.bezeichnung}
                             color={einsatz.geraet.status.farbe}
                           />
                         )}
