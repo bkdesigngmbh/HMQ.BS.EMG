@@ -173,8 +173,8 @@ export interface Database {
           strasse: string | null;
           plz: string | null;
           ort: string | null;
-          lat: number | null;
-          lng: number | null;
+          koordinaten_lat: number | null;
+          koordinaten_lng: number | null;
           notizen: string | null;
           created_at: string;
           updated_at: string;
@@ -189,8 +189,8 @@ export interface Database {
           strasse?: string | null;
           plz?: string | null;
           ort?: string | null;
-          lat?: number | null;
-          lng?: number | null;
+          koordinaten_lat?: number | null;
+          koordinaten_lng?: number | null;
           notizen?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -205,8 +205,8 @@ export interface Database {
           strasse?: string | null;
           plz?: string | null;
           ort?: string | null;
-          lat?: number | null;
-          lng?: number | null;
+          koordinaten_lat?: number | null;
+          koordinaten_lng?: number | null;
           notizen?: string | null;
           created_at?: string;
           updated_at?: string;

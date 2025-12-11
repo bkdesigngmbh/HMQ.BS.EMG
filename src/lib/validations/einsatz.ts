@@ -24,13 +24,15 @@ export type EinsatzBeendenFormValues = z.infer<typeof einsatzBeendenSchema>;
 
 export function transformEinsatzValues(values: EinsatzFormValues) {
   return {
-    ...values,
+    geraet_id: values.geraet_id,
+    auftrag_id: values.auftrag_id,
+    von: values.von,
     bis_provisorisch: values.bis_provisorisch || null,
     strasse: values.strasse || null,
     plz: values.plz || null,
     ort: values.ort || null,
-    lat: values.lat ?? null,
-    lng: values.lng ?? null,
+    koordinaten_lat: values.lat ?? null,
+    koordinaten_lng: values.lng ?? null,
     notizen: values.notizen || null,
   };
 }
