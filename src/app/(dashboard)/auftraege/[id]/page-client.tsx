@@ -115,13 +115,13 @@ export function AuftraegeDetailClient({ auftrag }: AuftraegeDetailClientProps) {
         </Card>
       </div>
 
-      {auftrag.bezeichnung && (
+      {auftrag.auftragsbezeichnung && (
         <Card>
           <CardHeader>
             <CardTitle>Beschreibung</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="whitespace-pre-wrap">{auftrag.bezeichnung}</p>
+            <p className="whitespace-pre-wrap">{auftrag.auftragsbezeichnung}</p>
           </CardContent>
         </Card>
       )}

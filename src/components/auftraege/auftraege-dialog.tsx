@@ -66,7 +66,7 @@ export function AuftraegeDialog({
       form.reset({
         auftragsnummer: auftrag.auftragsnummer,
         auftragsort: auftrag.auftragsort || "",
-        bezeichnung: auftrag.bezeichnung || "",
+        bezeichnung: auftrag.auftragsbezeichnung || "",
         status: auftrag.status,
       });
     } else {

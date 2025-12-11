@@ -137,7 +137,7 @@ export interface Database {
           id: string;
           auftragsnummer: string;
           auftragsort: string | null;
-          bezeichnung: string | null;
+          auftragsbezeichnung: string | null;
           status: "aktiv" | "inaktiv";
           created_at: string;
           updated_at: string;
@@ -146,7 +146,7 @@ export interface Database {
           id?: string;
           auftragsnummer: string;
           auftragsort?: string | null;
-          bezeichnung?: string | null;
+          auftragsbezeichnung?: string | null;
           status?: "aktiv" | "inaktiv";
           created_at?: string;
           updated_at?: string;
@@ -155,7 +155,7 @@ export interface Database {
           id?: string;
           auftragsnummer?: string;
           auftragsort?: string | null;
-          bezeichnung?: string | null;
+          auftragsbezeichnung?: string | null;
           status?: "aktiv" | "inaktiv";
           created_at?: string;
           updated_at?: string;

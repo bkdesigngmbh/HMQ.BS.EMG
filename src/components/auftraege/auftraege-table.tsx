@@ -31,11 +31,11 @@ export function AuftraegeTable({ auftraege, isLoading = false }: AuftraegeTableP
     },
     {
       header: "Bezeichnung",
-      accessorKey: "bezeichnung",
+      accessorKey: "auftragsbezeichnung",
       sortable: true,
       cell: (auftrag) => (
         <span className="max-w-xs truncate block">
-          {auftrag.bezeichnung || "-"}
+          {auftrag.auftragsbezeichnung || "-"}
         </span>
       ),
     },
