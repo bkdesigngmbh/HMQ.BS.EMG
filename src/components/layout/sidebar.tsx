@@ -4,8 +4,6 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { useUser } from "@/lib/hooks/use-user";
-import { useAdmin } from "@/lib/hooks/use-admin";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -30,6 +28,14 @@ import {
 } from "lucide-react";
 
 const SIDEBAR_COLLAPSED_KEY = "sidebar-collapsed";
+
+// Profil-Typ für die Props
+interface Profile {
+  id: string;
+  email: string;
+  name: string | null;
+  rolle: "admin" | "user";
+}
 
 interface NavItem {
   title: string;
@@ -75,12 +81,17 @@ const adminItems: NavItem[] = [
   },
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+  profile: Profile | null;
+}
+
+export function Sidebar({ profile }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const { profile } = useUser();
-  const { isAdmin, isLoading: isAdminLoading } = useAdmin();
+
+  // Admin-Check basierend auf dem serverseitig geladenen Profil
+  const isAdmin = profile?.rolle === "admin";
 
   useEffect(() => {
     const saved = localStorage.getItem(SIDEBAR_COLLAPSED_KEY);
@@ -156,7 +167,7 @@ export function Sidebar() {
                 />
               ))}
 
-              {!isAdminLoading && isAdmin && (
+              {isAdmin && (
                 <>
                   <Separator className="my-4" />
                   {adminItems.map((item) => (
