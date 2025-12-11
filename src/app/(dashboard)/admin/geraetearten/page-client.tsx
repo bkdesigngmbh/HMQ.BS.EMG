@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { AdminGuard } from "@/components/layout/admin-guard";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -125,8 +124,7 @@ export function GeraeteartenPageClient({ initialGeraetearten }: GeraeteartenPage
   };
 
   return (
-    <AdminGuard>
-      <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6">
         <div className="flex items-center gap-4">
           <Link href="/admin">
             <Button variant="ghost" size="icon">
@@ -282,7 +280,6 @@ export function GeraeteartenPageClient({ initialGeraetearten }: GeraeteartenPage
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      </div>
-    </AdminGuard>
+    </div>
   );
 }
