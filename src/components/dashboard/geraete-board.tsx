@@ -16,6 +16,7 @@ import { GeraetePool } from "./geraete-pool";
 import { AuftraegeDropZones } from "./auftraege-drop-zones";
 import { GeraetCard } from "./geraet-card";
 import { StandortDialog } from "./standort-dialog";
+import { EinsatzBeendenDialog } from "./einsatz-beenden-dialog";
 
 interface Geraet {
   id: string;
@@ -41,21 +42,38 @@ interface Auftrag {
   einsaetze: Einsatz[];
 }
 
+interface Status {
+  id: string;
+  bezeichnung: string;
+  farbe: string | null;
+}
+
 interface GeraeteBoardProps {
   verfuegbareGeraete: Geraet[];
   aktiveAuftraege: Auftrag[];
   imEinsatzStatusId: string;
+  statusListe: Status[];
 }
 
 export function GeraeteBoard({
   verfuegbareGeraete,
   aktiveAuftraege,
   imEinsatzStatusId,
+  statusListe,
 }: GeraeteBoardProps) {
   const [activeGeraet, setActiveGeraet] = useState<Geraet | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
+
+  // Standort-Dialog State
+  const [standortDialogOpen, setStandortDialogOpen] = useState(false);
   const [targetAuftrag, setTargetAuftrag] = useState<Auftrag | null>(null);
   const [draggedGeraet, setDraggedGeraet] = useState<Geraet | null>(null);
+
+  // Beenden-Dialog State
+  const [beendenDialogOpen, setBeendenDialogOpen] = useState(false);
+  const [zuBeendenderEinsatz, setZuBeendenderEinsatz] = useState<{
+    id: string;
+    geraetName: string;
+  } | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -87,15 +105,25 @@ export function GeraeteBoard({
         // Dialog öffnen für Standort-Eingabe
         setDraggedGeraet(geraet);
         setTargetAuftrag(auftrag);
-        setDialogOpen(true);
+        setStandortDialogOpen(true);
       }
     }
   }
 
-  function handleDialogClose() {
-    setDialogOpen(false);
+  function handleEinsatzKlick(einsatzId: string, geraetName: string) {
+    setZuBeendenderEinsatz({ id: einsatzId, geraetName });
+    setBeendenDialogOpen(true);
+  }
+
+  function handleStandortDialogClose() {
+    setStandortDialogOpen(false);
     setDraggedGeraet(null);
     setTargetAuftrag(null);
+  }
+
+  function handleBeendenDialogClose() {
+    setBeendenDialogOpen(false);
+    setZuBeendenderEinsatz(null);
   }
 
   return (
@@ -110,7 +138,10 @@ export function GeraeteBoard({
         <GeraetePool geraete={verfuegbareGeraete} />
 
         {/* Aktive Aufträge als Drop-Zonen */}
-        <AuftraegeDropZones auftraege={aktiveAuftraege} />
+        <AuftraegeDropZones
+          auftraege={aktiveAuftraege}
+          onEinsatzKlick={handleEinsatzKlick}
+        />
       </div>
 
       {/* Drag Overlay - zeigt das gezogene Element */}
@@ -120,11 +151,20 @@ export function GeraeteBoard({
 
       {/* Standort-Dialog */}
       <StandortDialog
-        open={dialogOpen}
-        onClose={handleDialogClose}
+        open={standortDialogOpen}
+        onClose={handleStandortDialogClose}
         geraet={draggedGeraet}
         auftrag={targetAuftrag}
         imEinsatzStatusId={imEinsatzStatusId}
+      />
+
+      {/* Einsatz-Beenden-Dialog */}
+      <EinsatzBeendenDialog
+        open={beendenDialogOpen}
+        onClose={handleBeendenDialogClose}
+        einsatzId={zuBeendenderEinsatz?.id || null}
+        geraetName={zuBeendenderEinsatz?.geraetName || null}
+        statusListe={statusListe}
       />
     </DndContext>
   );
