@@ -34,7 +34,7 @@ export function EinsaetzeTable({
       sortFn: (a, b) =>
         a.auftrag.auftragsnummer.localeCompare(b.auftrag.auftragsnummer, "de-CH"),
       cell: (einsatz) => (
-        <span className="font-mono">{einsatz.auftrag.auftragsnummer}</span>
+        <span>{einsatz.auftrag.auftragsnummer}</span>
       ),
     },
     {

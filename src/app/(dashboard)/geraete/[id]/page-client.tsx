@@ -184,7 +184,7 @@ export function GeraeteDetailClient({
               <CardContent className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Client</span>
-                  <span className="font-mono">{geraet.client || "-"}</span>
+                  <span>{geraet.client || "-"}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">IP-Adresse</span>

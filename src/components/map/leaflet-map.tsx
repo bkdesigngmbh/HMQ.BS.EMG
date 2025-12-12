@@ -108,7 +108,7 @@ export function LeafletMap({ einsaetze }: LeafletMapProps) {
               <div className="border-t my-2 pt-2">
                 <div className="text-sm">
                   <span className="text-gray-500">Auftrag:</span>{" "}
-                  <span className="font-mono">{einsatz.auftrag.auftragsnummer}</span>
+                  <span className="font-medium">{einsatz.auftrag.auftragsnummer}</span>
                 </div>
                 <div className="text-sm">
                   <span className="text-gray-500">Seit:</span>{" "}

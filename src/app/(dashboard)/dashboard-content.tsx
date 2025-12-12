@@ -157,7 +157,7 @@ export function DashboardContent({
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-mono">
+                        <p className="text-sm font-medium">
                           {einsatz.auftrag.auftragsnummer}
                         </p>
                         {einsatz.geraet.status && (
@@ -259,7 +259,7 @@ export function DashboardContent({
                   <div className="flex items-center justify-between p-4 rounded-lg border hover:bg-muted/50 transition-colors">
                     {/* Links: Auftragsinfo */}
                     <div className="min-w-0 flex-1">
-                      <p className="font-mono font-semibold text-lg">
+                      <p className="font-semibold text-lg">
                         {auftrag.auftragsnummer}
                       </p>
                       <p className="text-sm text-muted-foreground truncate">
