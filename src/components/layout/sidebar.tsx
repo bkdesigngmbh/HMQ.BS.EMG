@@ -18,7 +18,6 @@ import {
   LayoutDashboard,
   Box,
   FileText,
-  Calendar,
   Map,
   Settings,
   LogOut,
@@ -61,11 +60,6 @@ const navItems: NavItem[] = [
     title: "Aufträge",
     href: "/auftraege",
     icon: FileText,
-  },
-  {
-    title: "Einsätze",
-    href: "/einsaetze",
-    icon: Calendar,
   },
   {
     title: "Karte",

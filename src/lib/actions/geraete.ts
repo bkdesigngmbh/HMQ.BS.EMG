@@ -258,6 +258,24 @@ export async function getGeraetestatus() {
   }
 }
 
+// Status-ID für "Im Einsatz" holen
+export async function getImEinsatzStatusId(): Promise<string | null> {
+  try {
+    const supabase = await createClient();
+
+    const { data } = await supabase
+      .from("status")
+      .select("id")
+      .ilike("bezeichnung", "im einsatz")
+      .single();
+
+    return data?.id || null;
+  } catch (error) {
+    console.error("Fehler beim Laden des Status:", error);
+    return null;
+  }
+}
+
 // Dashboard-Statistiken
 export async function getGeraeteStatistiken() {
   const defaultStatistiken = {

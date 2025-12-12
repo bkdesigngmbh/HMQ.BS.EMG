@@ -197,6 +197,69 @@ export async function deleteAuftrag(id: string) {
   revalidatePath("/auftraege");
 }
 
+// Aktive Aufträge mit Einsätzen für Drag&Drop Board
+export async function getAktiveAuftraegeMitEinsaetze() {
+  try {
+    const supabase = await createClient();
+
+    // Aktive Aufträge laden
+    const { data: auftraege, error: auftraegeError } = await supabase
+      .from("auftraege")
+      .select("*")
+      .eq("status", "aktiv")
+      .order("auftragsnummer", { ascending: true });
+
+    if (auftraegeError) {
+      console.error("Fehler beim Laden der aktiven Aufträge:", auftraegeError);
+      return [];
+    }
+
+    if (!auftraege || auftraege.length === 0) {
+      return [];
+    }
+
+    // Alle aktiven Einsätze (ohne bis_effektiv) laden
+    const auftragIds = auftraege.map((a) => a.id);
+    const { data: einsaetze, error: einsaetzeError } = await supabase
+      .from("einsaetze")
+      .select(`
+        id,
+        auftrag_id,
+        geraet:geraete (
+          id,
+          name
+        )
+      `)
+      .in("auftrag_id", auftragIds)
+      .is("bis_effektiv", null);
+
+    if (einsaetzeError) {
+      console.error("Fehler beim Laden der Einsätze:", einsaetzeError);
+    }
+
+    // Aufträge mit Einsätzen zusammenführen
+    const auftraegeMitEinsaetze = auftraege.map((auftrag) => ({
+      id: auftrag.id,
+      auftragsnummer: auftrag.auftragsnummer,
+      auftragsort: auftrag.auftragsort,
+      auftragsbezeichnung: auftrag.auftragsbezeichnung,
+      einsaetze: (einsaetze || [])
+        .filter((e) => e.auftrag_id === auftrag.id)
+        .map((e) => ({
+          id: e.id,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          geraet: e.geraet as any,
+        }))
+        .filter((e) => e.geraet),
+    }));
+
+    return auftraegeMitEinsaetze;
+  } catch (error) {
+    console.error("Fehler beim Laden der aktiven Aufträge:", error);
+    return [];
+  }
+}
+
 // Nächste Auftragsnummer generieren
 export async function getNextAuftragsnummer(): Promise<string> {
   const supabase = await createClient();
