@@ -30,17 +30,15 @@ export function GeraeteTable({ geraete, isLoading = false }: GeraeteTableProps) 
       ),
     },
     {
+      header: "Client",
+      accessorKey: "client",
+      sortable: true,
+      cell: (geraet) => geraet.client || "-",
+    },
+    {
       header: "Seriennummer",
       accessorKey: "seriennummer",
       sortable: true,
-    },
-    {
-      header: "Eigentum",
-      cell: (geraet) => (
-        <Badge variant={geraet.eigentum === "eigen" ? "default" : "secondary"}>
-          {geraet.eigentum === "eigen" ? "Eigen" : "Miete"}
-        </Badge>
-      ),
     },
     {
       header: "Geräteart",
@@ -51,6 +49,14 @@ export function GeraeteTable({ geraete, isLoading = false }: GeraeteTableProps) 
         return aName.localeCompare(bName, "de-CH");
       },
       cell: (geraet) => geraet.geraeteart?.bezeichnung || "-",
+    },
+    {
+      header: "Eigentum",
+      cell: (geraet) => (
+        <Badge variant={geraet.eigentum === "eigen" ? "default" : "secondary"}>
+          {geraet.eigentum === "eigen" ? "Eigen" : "Miete"}
+        </Badge>
+      ),
     },
     {
       header: "Status",
@@ -66,12 +72,6 @@ export function GeraeteTable({ geraete, isLoading = false }: GeraeteTableProps) 
         ) : (
           "-"
         ),
-    },
-    {
-      header: "Client",
-      accessorKey: "client",
-      sortable: true,
-      cell: (geraet) => geraet.client || "-",
     },
   ];
 
