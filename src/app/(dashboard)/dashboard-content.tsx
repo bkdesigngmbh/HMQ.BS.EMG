@@ -128,10 +128,10 @@ export function DashboardContent({
               Aktive Einsätze
             </CardTitle>
             <Link
-              href="/einsaetze"
+              href="/auftraege-geraete"
               className="text-sm text-muted-foreground hover:underline"
             >
-              Alle anzeigen
+              Übersicht
             </Link>
           </CardHeader>
           <CardContent>
@@ -188,7 +188,7 @@ export function DashboardContent({
               Anstehende Wartungen
             </CardTitle>
             <Link
-              href="/geraete"
+              href="/auftraege-geraete"
               className="text-sm text-muted-foreground hover:underline"
             >
               Alle Geräte
@@ -237,7 +237,7 @@ export function DashboardContent({
             Aktive Aufträge ({aktiveAuftraege.length})
           </CardTitle>
           <Link
-            href="/auftraege"
+            href="/auftraege-geraete"
             className="text-sm text-muted-foreground hover:underline"
           >
             Alle anzeigen
