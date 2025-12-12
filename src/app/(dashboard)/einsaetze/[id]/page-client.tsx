@@ -106,7 +106,7 @@ export function EinsatzDetailClient({
           <CardContent className="space-y-3">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Startdatum</span>
-              <span className="font-medium">{formatDate(einsatz.von_datum)}</span>
+              <span className="font-medium">{formatDate(einsatz.von)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Geplantes Ende</span>
