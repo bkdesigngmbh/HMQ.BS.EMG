@@ -1,18 +1,9 @@
 import { Suspense } from "react";
-import {
-  getGeraeteStatistiken,
-  getVerfuegbareGeraete,
-  getImEinsatzStatusId,
-  getGeraetestatus,
-} from "@/lib/actions/geraete";
-import {
-  getAktiveAuftraege,
-  getAktiveAuftraegeMitEinsaetze,
-} from "@/lib/actions/auftraege";
+import { getGeraeteStatistiken } from "@/lib/actions/geraete";
+import { getAktiveAuftraege } from "@/lib/actions/auftraege";
 import { getAktiveEinsaetze } from "@/lib/actions/einsaetze";
 import { getAnstehendeWartungen } from "@/lib/actions/wartungen";
 import { DashboardContent } from "./dashboard-content";
-import { GeraeteBoard } from "@/components/dashboard/geraete-board";
 import { LoadingSpinner } from "@/components/shared/loading-spinner";
 
 export const dynamic = "force-dynamic";
@@ -33,13 +24,6 @@ export default async function DashboardPage() {
   let aktiveEinsaetze: Awaited<ReturnType<typeof getAktiveEinsaetze>> = [];
   let anstehendeWartungen: Awaited<ReturnType<typeof getAnstehendeWartungen>> =
     [];
-  let verfuegbareGeraete: Awaited<ReturnType<typeof getVerfuegbareGeraete>> =
-    [];
-  let auftraegeMitEinsaetze: Awaited<
-    ReturnType<typeof getAktiveAuftraegeMitEinsaetze>
-  > = [];
-  let imEinsatzStatusId: string | null = null;
-  let statusListe: Awaited<ReturnType<typeof getGeraetestatus>> = [];
 
   try {
     statistiken = await getGeraeteStatistiken();
@@ -65,39 +49,6 @@ export default async function DashboardPage() {
     console.error("Fehler beim Laden der anstehenden Wartungen:", error);
   }
 
-  try {
-    verfuegbareGeraete = await getVerfuegbareGeraete();
-  } catch (error) {
-    console.error("Fehler beim Laden der verfügbaren Geräte:", error);
-  }
-
-  try {
-    auftraegeMitEinsaetze = await getAktiveAuftraegeMitEinsaetze();
-  } catch (error) {
-    console.error("Fehler beim Laden der Aufträge mit Einsätzen:", error);
-  }
-
-  try {
-    imEinsatzStatusId = await getImEinsatzStatusId();
-  } catch (error) {
-    console.error("Fehler beim Laden des Im-Einsatz-Status:", error);
-  }
-
-  try {
-    statusListe = await getGeraetestatus();
-  } catch (error) {
-    console.error("Fehler beim Laden der Status-Liste:", error);
-  }
-
-  // Transform verfuegbare Geräte for the board
-  const geraeteFuerBoard = verfuegbareGeraete.map((g) => ({
-    id: g.id,
-    name: g.name,
-    client: g.client,
-    geraeteart: g.geraeteart,
-    status: g.status,
-  }));
-
   return (
     <Suspense
       fallback={
@@ -115,19 +66,6 @@ export default async function DashboardPage() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         anstehendeWartungen={anstehendeWartungen as any}
       />
-
-      {/* Drag & Drop Geräte-Board */}
-      <div className="px-6 pb-6">
-        <GeraeteBoard
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          verfuegbareGeraete={geraeteFuerBoard as any}
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          aktiveAuftraege={auftraegeMitEinsaetze as any}
-          imEinsatzStatusId={imEinsatzStatusId || ""}
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          statusListe={statusListe as any}
-        />
-      </div>
     </Suspense>
   );
 }

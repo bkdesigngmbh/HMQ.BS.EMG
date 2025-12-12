@@ -16,8 +16,7 @@ import {
 } from "@/components/ui/tooltip";
 import {
   LayoutDashboard,
-  Box,
-  FileText,
+  Boxes,
   Map,
   Settings,
   LogOut,
@@ -52,14 +51,9 @@ const navItems: NavItem[] = [
     icon: LayoutDashboard,
   },
   {
-    title: "Geräte",
-    href: "/geraete",
-    icon: Box,
-  },
-  {
-    title: "Aufträge",
-    href: "/auftraege",
-    icon: FileText,
+    title: "Aufträge & Geräte",
+    href: "/auftraege-geraete",
+    icon: Boxes,
   },
   {
     title: "Karte",
