@@ -164,7 +164,7 @@ export async function getGeraeteByStatus(statusName: string) {
       geraeteart:geraetearten(*),
       status:status!inner(*)
     `)
-    .eq("status.name", statusName)
+    .eq("status.bezeichnung", statusName)
     .order("name", { ascending: true });
 
   if (error) {
@@ -180,15 +180,27 @@ export async function getVerfuegbareGeraete() {
   try {
     const supabase = await createClient();
 
-    // Alle Geräte mit Status "im Büro" laden
+    // Erst Status-ID für "Im Büro" holen (case-insensitive)
+    const { data: statusData } = await supabase
+      .from("status")
+      .select("id")
+      .ilike("bezeichnung", "im büro")
+      .single();
+
+    if (!statusData) {
+      console.error("Status 'Im Büro' nicht gefunden");
+      return [];
+    }
+
+    // Geräte mit diesem Status laden
     const { data, error } = await supabase
       .from("geraete")
       .select(`
         *,
         geraeteart:geraetearten(*),
-        status:status!inner(*)
+        status:status(*)
       `)
-      .eq("status.name", "im Büro")
+      .eq("status_id", statusData.id)
       .order("name", { ascending: true });
 
     if (error) {
@@ -211,7 +223,7 @@ export async function getGeraetearten() {
     const { data, error } = await supabase
       .from("geraetearten")
       .select("*")
-      .order("name", { ascending: true });
+      .order("sortierung", { ascending: true });
 
     if (error) {
       console.error("Fehler beim Laden der Gerätearten:", error);
@@ -232,7 +244,7 @@ export async function getGeraetestatus() {
     const { data, error } = await supabase
       .from("status")
       .select("*")
-      .order("name", { ascending: true });
+      .order("sortierung", { ascending: true });
 
     if (error) {
       console.error("Fehler beim Laden der Status:", error);
@@ -243,6 +255,24 @@ export async function getGeraetestatus() {
   } catch (error) {
     console.error("Fehler beim Laden der Status:", error);
     return [];
+  }
+}
+
+// Status-ID für "Im Einsatz" holen
+export async function getImEinsatzStatusId(): Promise<string | null> {
+  try {
+    const supabase = await createClient();
+
+    const { data } = await supabase
+      .from("status")
+      .select("id")
+      .ilike("bezeichnung", "im einsatz")
+      .single();
+
+    return data?.id || null;
+  } catch (error) {
+    console.error("Fehler beim Laden des Status:", error);
+    return null;
   }
 }
 
@@ -264,7 +294,7 @@ export async function getGeraeteStatistiken() {
       .from("geraete")
       .select(`
         id,
-        status:status(name)
+        status:status(bezeichnung)
       `);
 
     if (error) {
@@ -281,7 +311,7 @@ export async function getGeraeteStatistiken() {
     };
 
     geraete?.forEach((g) => {
-      const statusName = (g.status as unknown as { name: string } | null)?.name;
+      const statusName = (g.status as unknown as { bezeichnung: string } | null)?.bezeichnung;
       switch (statusName) {
         case "im Büro":
           statistiken.imBuero++;

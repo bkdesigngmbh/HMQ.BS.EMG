@@ -22,7 +22,8 @@ export default async function DashboardPage() {
   let statistiken = defaultStatistiken;
   let aktiveAuftraege: Awaited<ReturnType<typeof getAktiveAuftraege>> = [];
   let aktiveEinsaetze: Awaited<ReturnType<typeof getAktiveEinsaetze>> = [];
-  let anstehendeWartungen: Awaited<ReturnType<typeof getAnstehendeWartungen>> = [];
+  let anstehendeWartungen: Awaited<ReturnType<typeof getAnstehendeWartungen>> =
+    [];
 
   try {
     statistiken = await getGeraeteStatistiken();
@@ -58,7 +59,8 @@ export default async function DashboardPage() {
     >
       <DashboardContent
         statistiken={statistiken}
-        aktiveAuftraege={aktiveAuftraege}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        aktiveAuftraege={aktiveAuftraege as any}
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         aktiveEinsaetze={aktiveEinsaetze as any}
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

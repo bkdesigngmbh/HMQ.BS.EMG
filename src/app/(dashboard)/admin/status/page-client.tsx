@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { AdminGuard } from "@/components/layout/admin-guard";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,8 +33,9 @@ import {
 
 interface Status {
   id: string;
-  name: string;
+  bezeichnung: string;
   farbe: string;
+  sortierung: number | null;
 }
 
 interface StatusPageClientProps {
@@ -66,7 +66,7 @@ export function StatusPageClient({ initialStatus }: StatusPageClientProps) {
 
   const handleOpenEdit = (status: Status) => {
     setEditingStatus(status);
-    setFormName(status.name);
+    setFormName(status.bezeichnung);
     setFormFarbe(status.farbe);
     setError(null);
     setDialogOpen(true);
@@ -90,12 +90,12 @@ export function StatusPageClient({ initialStatus }: StatusPageClientProps) {
     try {
       if (editingStatus) {
         await updateGeraetestatus(editingStatus.id, {
-          name: formName.trim(),
+          bezeichnung: formName.trim(),
           farbe: formFarbe,
         });
       } else {
         await createGeraetestatus({
-          name: formName.trim(),
+          bezeichnung: formName.trim(),
           farbe: formFarbe,
         });
       }
@@ -126,8 +126,7 @@ export function StatusPageClient({ initialStatus }: StatusPageClientProps) {
   };
 
   return (
-    <AdminGuard>
-      <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6">
         <div className="flex items-center gap-4">
           <Link href="/admin">
             <Button variant="ghost" size="icon">
@@ -169,7 +168,7 @@ export function StatusPageClient({ initialStatus }: StatusPageClientProps) {
               <TableBody>
                 {statusListe.map((status) => (
                   <TableRow key={status.id}>
-                    <TableCell className="font-medium">{status.name}</TableCell>
+                    <TableCell className="font-medium">{status.bezeichnung}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <div
@@ -273,7 +272,7 @@ export function StatusPageClient({ initialStatus }: StatusPageClientProps) {
             <DialogHeader>
               <DialogTitle>Status löschen</DialogTitle>
               <DialogDescription>
-                Möchten Sie den Status &quot;{deletingStatus?.name}&quot; wirklich löschen?
+                Möchten Sie den Status &quot;{deletingStatus?.bezeichnung}&quot; wirklich löschen?
                 Diese Aktion kann nicht rückgängig gemacht werden.
               </DialogDescription>
             </DialogHeader>
@@ -299,7 +298,6 @@ export function StatusPageClient({ initialStatus }: StatusPageClientProps) {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      </div>
-    </AdminGuard>
+    </div>
   );
 }

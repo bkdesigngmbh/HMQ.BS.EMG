@@ -94,7 +94,7 @@ export function GeraeteDialog({
         ip_adresse: "",
         pin: "",
         geraeteart_id: null,
-        status_id: statusListe.find((s) => s.name === "im Büro")?.id || null,
+        status_id: statusListe.find((s) => s.bezeichnung === "im Büro")?.id || null,
         kaufdatum: "",
         naechster_service: "",
         notizen: "",
@@ -198,7 +198,7 @@ export function GeraeteDialog({
                       <SelectContent>
                         {geraetearten.map((art) => (
                           <SelectItem key={art.id} value={art.id}>
-                            {art.name}
+                            {art.bezeichnung}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -228,7 +228,7 @@ export function GeraeteDialog({
                       <SelectContent>
                         {statusListe.map((status) => (
                           <SelectItem key={status.id} value={status.id}>
-                            {status.name}
+                            {status.bezeichnung}
                           </SelectItem>
                         ))}
                       </SelectContent>

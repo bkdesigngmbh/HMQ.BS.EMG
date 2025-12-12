@@ -90,20 +90,20 @@ export interface Database {
       geraetearten: {
         Row: {
           id: string;
-          name: string;
-          beschreibung: string | null;
+          bezeichnung: string;
+          sortierung: number | null;
           created_at: string;
         };
         Insert: {
           id?: string;
-          name: string;
-          beschreibung?: string | null;
+          bezeichnung: string;
+          sortierung?: number | null;
           created_at?: string;
         };
         Update: {
           id?: string;
-          name?: string;
-          beschreibung?: string | null;
+          bezeichnung?: string;
+          sortierung?: number | null;
           created_at?: string;
         };
         Relationships: [];
@@ -111,20 +111,23 @@ export interface Database {
       status: {
         Row: {
           id: string;
-          name: string;
+          bezeichnung: string;
           farbe: string;
+          sortierung: number | null;
           created_at: string;
         };
         Insert: {
           id?: string;
-          name: string;
+          bezeichnung: string;
           farbe?: string;
+          sortierung?: number | null;
           created_at?: string;
         };
         Update: {
           id?: string;
-          name?: string;
+          bezeichnung?: string;
           farbe?: string;
+          sortierung?: number | null;
           created_at?: string;
         };
         Relationships: [];
@@ -134,7 +137,7 @@ export interface Database {
           id: string;
           auftragsnummer: string;
           auftragsort: string | null;
-          bezeichnung: string | null;
+          auftragsbezeichnung: string | null;
           status: "aktiv" | "inaktiv";
           created_at: string;
           updated_at: string;
@@ -143,7 +146,7 @@ export interface Database {
           id?: string;
           auftragsnummer: string;
           auftragsort?: string | null;
-          bezeichnung?: string | null;
+          auftragsbezeichnung?: string | null;
           status?: "aktiv" | "inaktiv";
           created_at?: string;
           updated_at?: string;
@@ -152,7 +155,7 @@ export interface Database {
           id?: string;
           auftragsnummer?: string;
           auftragsort?: string | null;
-          bezeichnung?: string | null;
+          auftragsbezeichnung?: string | null;
           status?: "aktiv" | "inaktiv";
           created_at?: string;
           updated_at?: string;
@@ -164,14 +167,14 @@ export interface Database {
           id: string;
           geraet_id: string;
           auftrag_id: string;
-          von_datum: string;
+          von: string;
           bis_provisorisch: string | null;
           bis_effektiv: string | null;
           strasse: string | null;
           plz: string | null;
           ort: string | null;
-          lat: number | null;
-          lng: number | null;
+          koordinaten_lat: number | null;
+          koordinaten_lng: number | null;
           notizen: string | null;
           created_at: string;
           updated_at: string;
@@ -180,14 +183,14 @@ export interface Database {
           id?: string;
           geraet_id: string;
           auftrag_id: string;
-          von_datum: string;
+          von: string;
           bis_provisorisch?: string | null;
           bis_effektiv?: string | null;
           strasse?: string | null;
           plz?: string | null;
           ort?: string | null;
-          lat?: number | null;
-          lng?: number | null;
+          koordinaten_lat?: number | null;
+          koordinaten_lng?: number | null;
           notizen?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -196,14 +199,14 @@ export interface Database {
           id?: string;
           geraet_id?: string;
           auftrag_id?: string;
-          von_datum?: string;
+          von?: string;
           bis_provisorisch?: string | null;
           bis_effektiv?: string | null;
           strasse?: string | null;
           plz?: string | null;
           ort?: string | null;
-          lat?: number | null;
-          lng?: number | null;
+          koordinaten_lat?: number | null;
+          koordinaten_lng?: number | null;
           notizen?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -243,23 +246,20 @@ export interface Database {
       wartungsarten: {
         Row: {
           id: string;
-          name: string;
-          beschreibung: string | null;
-          intervall_monate: number | null;
+          bezeichnung: string;
+          sortierung: number | null;
           created_at: string;
         };
         Insert: {
           id?: string;
-          name: string;
-          beschreibung?: string | null;
-          intervall_monate?: number | null;
+          bezeichnung: string;
+          sortierung?: number | null;
           created_at?: string;
         };
         Update: {
           id?: string;
-          name?: string;
-          beschreibung?: string | null;
-          intervall_monate?: number | null;
+          bezeichnung?: string;
+          sortierung?: number | null;
           created_at?: string;
         };
         Relationships: [];

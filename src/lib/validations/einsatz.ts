@@ -3,7 +3,7 @@ import { z } from "zod";
 export const einsatzSchema = z.object({
   geraet_id: z.string().uuid("Bitte wählen Sie ein Gerät"),
   auftrag_id: z.string().uuid("Bitte wählen Sie einen Auftrag"),
-  von_datum: z.string().min(1, "Von-Datum ist erforderlich"),
+  von: z.string().min(1, "Von-Datum ist erforderlich"),
   bis_provisorisch: z.string().nullable().optional(),
   strasse: z.string().max(255).nullable().optional(),
   plz: z.string().max(10).nullable().optional(),
@@ -24,13 +24,15 @@ export type EinsatzBeendenFormValues = z.infer<typeof einsatzBeendenSchema>;
 
 export function transformEinsatzValues(values: EinsatzFormValues) {
   return {
-    ...values,
+    geraet_id: values.geraet_id,
+    auftrag_id: values.auftrag_id,
+    von: values.von,
     bis_provisorisch: values.bis_provisorisch || null,
     strasse: values.strasse || null,
     plz: values.plz || null,
     ort: values.ort || null,
-    lat: values.lat ?? null,
-    lng: values.lng ?? null,
+    koordinaten_lat: values.lat ?? null,
+    koordinaten_lng: values.lng ?? null,
     notizen: values.notizen || null,
   };
 }

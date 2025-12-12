@@ -59,7 +59,10 @@ export function EinsatzBeendenDialog({
 
   useEffect(() => {
     if (open) {
-      const imBueroStatus = statusListe.find((s) => s.name === "im Büro");
+      // Case-insensitive Suche nach "im Büro"
+      const imBueroStatus = statusListe.find(
+        (s) => s.bezeichnung.toLowerCase() === "im büro"
+      );
       form.reset({
         bis_effektiv: new Date().toISOString().split("T")[0],
         neuer_status_id: imBueroStatus?.id || "",
@@ -117,10 +120,10 @@ export function EinsatzBeendenDialog({
                     </FormControl>
                     <SelectContent>
                       {statusListe
-                        .filter((s) => s.name !== "im Einsatz")
+                        .filter((s) => s.bezeichnung.toLowerCase() !== "im einsatz")
                         .map((status) => (
                           <SelectItem key={status.id} value={status.id}>
-                            {status.name}
+                            {status.bezeichnung}
                           </SelectItem>
                         ))}
                     </SelectContent>

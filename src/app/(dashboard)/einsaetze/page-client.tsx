@@ -8,7 +8,7 @@ import { EinsaetzeTable } from "@/components/einsaetze/einsaetze-table";
 import { EinsatzWizard } from "@/components/einsaetze/einsatz-wizard";
 import { Plus } from "lucide-react";
 import { createEinsatz } from "@/lib/actions/einsaetze";
-import { transformEinsatzValues, type EinsatzFormValues } from "@/lib/validations/einsatz";
+import { type EinsatzFormValues } from "@/lib/validations/einsatz";
 import type { Auftrag } from "@/types/database";
 
 interface EinsaetzePageClientProps {
@@ -31,9 +31,12 @@ export function EinsaetzePageClient({
   const handleSave = async (values: EinsatzFormValues) => {
     setIsLoading(true);
     try {
-      const transformedValues = transformEinsatzValues(values);
-      await createEinsatz(transformedValues);
+      // Direkt values übergeben - Transform passiert in der Server Action
+      await createEinsatz(values);
       router.refresh();
+    } catch (error) {
+      console.error("Fehler beim Erstellen des Einsatzes:", error);
+      throw error; // Re-throw damit Wizard den Fehler anzeigen kann
     } finally {
       setIsLoading(false);
     }

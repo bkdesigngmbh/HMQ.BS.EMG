@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { AdminGuard } from "@/components/layout/admin-guard";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,8 +34,8 @@ import {
 
 interface Geraeteart {
   id: string;
-  name: string;
-  beschreibung: string | null;
+  bezeichnung: string;
+  sortierung: number | null;
 }
 
 interface GeraeteartenPageClientProps {
@@ -67,8 +66,8 @@ export function GeraeteartenPageClient({ initialGeraetearten }: GeraeteartenPage
 
   const handleOpenEdit = (geraeteart: Geraeteart) => {
     setEditingGeraeteart(geraeteart);
-    setFormName(geraeteart.name);
-    setFormBeschreibung(geraeteart.beschreibung || "");
+    setFormName(geraeteart.bezeichnung);
+    setFormBeschreibung("");
     setError(null);
     setDialogOpen(true);
   };
@@ -91,13 +90,11 @@ export function GeraeteartenPageClient({ initialGeraetearten }: GeraeteartenPage
     try {
       if (editingGeraeteart) {
         await updateGeraeteart(editingGeraeteart.id, {
-          name: formName.trim(),
-          beschreibung: formBeschreibung.trim() || undefined,
+          bezeichnung: formName.trim(),
         });
       } else {
         await createGeraeteart({
-          name: formName.trim(),
-          beschreibung: formBeschreibung.trim() || undefined,
+          bezeichnung: formName.trim(),
         });
       }
       setDialogOpen(false);
@@ -127,8 +124,7 @@ export function GeraeteartenPageClient({ initialGeraetearten }: GeraeteartenPage
   };
 
   return (
-    <AdminGuard>
-      <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6">
         <div className="flex items-center gap-4">
           <Link href="/admin">
             <Button variant="ghost" size="icon">
@@ -170,9 +166,9 @@ export function GeraeteartenPageClient({ initialGeraetearten }: GeraeteartenPage
               <TableBody>
                 {geraetearten.map((geraeteart) => (
                   <TableRow key={geraeteart.id}>
-                    <TableCell className="font-medium">{geraeteart.name}</TableCell>
+                    <TableCell className="font-medium">{geraeteart.bezeichnung}</TableCell>
                     <TableCell className="text-muted-foreground">
-                      {geraeteart.beschreibung || "-"}
+                      {geraeteart.sortierung || "-"}
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1">
@@ -258,7 +254,7 @@ export function GeraeteartenPageClient({ initialGeraetearten }: GeraeteartenPage
             <DialogHeader>
               <DialogTitle>Geräteart löschen</DialogTitle>
               <DialogDescription>
-                Möchten Sie die Geräteart &quot;{deletingGeraeteart?.name}&quot; wirklich löschen?
+                Möchten Sie die Geräteart &quot;{deletingGeraeteart?.bezeichnung}&quot; wirklich löschen?
                 Diese Aktion kann nicht rückgängig gemacht werden.
               </DialogDescription>
             </DialogHeader>
@@ -284,7 +280,6 @@ export function GeraeteartenPageClient({ initialGeraetearten }: GeraeteartenPage
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      </div>
-    </AdminGuard>
+    </div>
   );
 }

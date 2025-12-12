@@ -106,7 +106,7 @@ export function EinsatzDetailClient({
           <CardContent className="space-y-3">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Startdatum</span>
-              <span className="font-medium">{formatDate(einsatz.von_datum)}</span>
+              <span className="font-medium">{formatDate(einsatz.von)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Geplantes Ende</span>
@@ -135,9 +135,9 @@ export function EinsatzDetailClient({
             {getAdresse() ? (
               <>
                 <p className="font-medium">{getAdresse()}</p>
-                {einsatz.lat && einsatz.lng && (
+                {einsatz.koordinaten_lat && einsatz.koordinaten_lng && (
                   <p className="text-sm text-muted-foreground">
-                    Koordinaten: {einsatz.lat.toFixed(6)}, {einsatz.lng.toFixed(6)}
+                    Koordinaten: {einsatz.koordinaten_lat.toFixed(6)}, {einsatz.koordinaten_lng.toFixed(6)}
                   </p>
                 )}
               </>
@@ -167,17 +167,17 @@ export function EinsatzDetailClient({
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Seriennummer</span>
-              <span className="font-mono">{einsatz.geraet.seriennummer}</span>
+              <span>{einsatz.geraet.seriennummer}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Typ</span>
-              <span>{einsatz.geraet.geraeteart?.name || "-"}</span>
+              <span>{einsatz.geraet.geraeteart?.bezeichnung || "-"}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Status</span>
               {einsatz.geraet.status ? (
                 <StatusBadge
-                  status={einsatz.geraet.status.name}
+                  status={einsatz.geraet.status.bezeichnung}
                   color={einsatz.geraet.status.farbe}
                 />
               ) : (
@@ -200,7 +200,7 @@ export function EinsatzDetailClient({
               <span className="text-muted-foreground">Nummer</span>
               <Link
                 href={`/auftraege/${einsatz.auftrag.id}`}
-                className="font-mono font-medium hover:underline"
+                className="font-medium hover:underline"
               >
                 {einsatz.auftrag.auftragsnummer}
               </Link>

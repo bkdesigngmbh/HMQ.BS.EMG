@@ -90,7 +90,7 @@ export function GeraeteDetailClient({
             <div className="flex items-center gap-2">
               {geraet.status && (
                 <StatusBadge
-                  status={geraet.status.name}
+                  status={geraet.status.bezeichnung}
                   color={geraet.status.farbe}
                 />
               )}
@@ -157,13 +157,13 @@ export function GeraeteDetailClient({
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Geräteart</span>
-                  <span>{geraet.geraeteart?.name || "-"}</span>
+                  <span>{geraet.geraeteart?.bezeichnung || "-"}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Status</span>
                   {geraet.status ? (
                     <StatusBadge
-                      status={geraet.status.name}
+                      status={geraet.status.bezeichnung}
                       color={geraet.status.farbe}
                     />
                   ) : (
@@ -184,7 +184,7 @@ export function GeraeteDetailClient({
               <CardContent className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Client</span>
-                  <span className="font-mono">{geraet.client || "-"}</span>
+                  <span>{geraet.client || "-"}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">IP-Adresse</span>
@@ -255,7 +255,7 @@ export function GeraeteDetailClient({
                         </div>
                         <div className="text-right">
                           <p className="text-sm">
-                            {formatDate(einsatz.von_datum)} -{" "}
+                            {formatDate(einsatz.von)} -{" "}
                             {einsatz.bis_effektiv
                               ? formatDate(einsatz.bis_effektiv)
                               : "laufend"}
@@ -298,7 +298,7 @@ export function GeraeteDetailClient({
                     >
                       <div>
                         <p className="font-medium">
-                          {wartung.wartungsart?.name || "Wartung"}
+                          {wartung.wartungsart?.bezeichnung || "Wartung"}
                         </p>
                         <p className="text-sm text-muted-foreground">
                           {wartung.durchgefuehrt_von

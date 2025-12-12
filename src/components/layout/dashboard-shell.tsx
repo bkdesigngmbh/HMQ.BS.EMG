@@ -1,13 +1,27 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Sidebar } from "@/components/layout/sidebar";
+import { useState, useEffect, useCallback } from "react";
+import { Sidebar, MobileHeader } from "@/components/layout/sidebar";
 import { cn } from "@/lib/utils";
 
 const SIDEBAR_COLLAPSED_KEY = "sidebar-collapsed";
 
-export function DashboardShell({ children }: { children: React.ReactNode }) {
+// Profil-Typ für die Props
+interface Profile {
+  id: string;
+  email: string;
+  name: string | null;
+  rolle: "admin" | "user";
+}
+
+interface DashboardShellProps {
+  children: React.ReactNode;
+  profile: Profile; // Nicht nullable - Layout redirected wenn kein Profil
+}
+
+export function DashboardShell({ children, profile }: DashboardShellProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem(SIDEBAR_COLLAPSED_KEY);
@@ -38,13 +52,43 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
+  // Close mobile menu on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsMobileOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const handleMobileClose = useCallback(() => {
+    setIsMobileOpen(false);
+  }, []);
+
+  const handleMobileOpen = useCallback(() => {
+    setIsMobileOpen(true);
+  }, []);
+
   return (
     <div className="min-h-screen bg-muted/30">
-      <Sidebar />
+      {/* Mobile Header */}
+      <MobileHeader onMenuClick={handleMobileOpen} />
+
+      {/* Sidebar */}
+      <Sidebar profile={profile} isMobileOpen={isMobileOpen} onMobileClose={handleMobileClose} />
+
+      {/* Main Content */}
       <main
         className={cn(
           "transition-all duration-300",
-          isCollapsed ? "ml-[70px]" : "ml-[250px]"
+          // Desktop sidebar margin
+          "md:ml-[70px]",
+          !isCollapsed && "md:ml-[250px]",
+          // Mobile top padding for fixed header
+          "pt-16 md:pt-0"
         )}
       >
         {children}

@@ -65,13 +65,14 @@ export function EinsatzWizard({
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<GeocodingResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<EinsatzFormValues>({
     resolver: zodResolver(einsatzSchema),
     defaultValues: {
       geraet_id: "",
       auftrag_id: "",
-      von_datum: new Date().toISOString().split("T")[0],
+      von: new Date().toISOString().split("T")[0],
       bis_provisorisch: "",
       strasse: "",
       plz: "",
@@ -85,10 +86,11 @@ export function EinsatzWizard({
   useEffect(() => {
     if (open) {
       setStep(1);
+      setError(null);
       form.reset({
         geraet_id: "",
         auftrag_id: "",
-        von_datum: new Date().toISOString().split("T")[0],
+        von: new Date().toISOString().split("T")[0],
         bis_provisorisch: "",
         strasse: "",
         plz: "",
@@ -139,22 +141,29 @@ export function EinsatzWizard({
   };
 
   const handleSubmit = async (values: EinsatzFormValues) => {
+    setError(null);
     try {
       await onSave(values);
       onOpenChange(false);
-    } catch {
-      // Error handling is done in parent component
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Ein Fehler ist aufgetreten";
+      setError(message);
+      console.error("Einsatz erstellen fehlgeschlagen:", err);
     }
   };
 
   const canProceedStep1 = form.watch("geraet_id") && form.watch("auftrag_id");
-  const canProceedStep2 = form.watch("von_datum");
+  const canProceedStep2 = form.watch("von");
 
   const stepTitles = ["Gerät & Auftrag", "Zeitraum", "Standort"];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
+      <DialogContent
+        className="max-w-lg"
+        onInteractOutside={(e) => e.preventDefault()}
+        onEscapeKeyDown={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle>Neuer Einsatz</DialogTitle>
           <DialogDescription>
@@ -243,7 +252,7 @@ export function EinsatzWizard({
               <>
                 <FormField
                   control={form.control}
-                  name="von_datum"
+                  name="von"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Startdatum *</FormLabel>
@@ -374,6 +383,10 @@ export function EinsatzWizard({
                   </p>
                 )}
               </>
+            )}
+
+            {error && (
+              <p className="text-sm text-destructive">{error}</p>
             )}
 
             <DialogFooter>
