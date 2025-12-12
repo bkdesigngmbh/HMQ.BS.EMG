@@ -15,6 +15,18 @@ import {
 } from "lucide-react";
 import type { Auftrag } from "@/types/database";
 
+// Erweiterter Typ für Aufträge mit aktiven Geräten
+interface AuftragMitGeraeten extends Auftrag {
+  aktiveGeraete: Array<{
+    id: string;
+    name: string;
+    status: {
+      bezeichnung: string;
+      farbe: string;
+    } | null;
+  }>;
+}
+
 interface DashboardContentProps {
   statistiken: {
     gesamt: number;
@@ -23,7 +35,7 @@ interface DashboardContentProps {
     inWartung: number;
     defekt: number;
   };
-  aktiveAuftraege: Auftrag[];
+  aktiveAuftraege: AuftragMitGeraeten[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   aktiveEinsaetze: any[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -217,7 +229,7 @@ export function DashboardContent({
         </Card>
       </div>
 
-      {/* Aktive Aufträge */}
+      {/* Aktive Aufträge - Volle Breite */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2">
@@ -237,20 +249,49 @@ export function DashboardContent({
               Keine aktiven Aufträge.
             </p>
           ) : (
-            <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
-              {aktiveAuftraege.slice(0, 6).map((auftrag) => (
+            <div className="space-y-2">
+              {aktiveAuftraege.map((auftrag) => (
                 <Link
                   key={auftrag.id}
                   href={`/auftraege/${auftrag.id}`}
                   className="block"
                 >
-                  <div className="p-3 rounded-lg border hover:bg-muted/50 transition-colors">
-                    <p className="font-mono font-medium">
-                      {auftrag.auftragsnummer}
-                    </p>
-                    <p className="text-sm text-muted-foreground truncate">
-                      {auftrag.auftragsort || "Kein Ort"}
-                    </p>
+                  <div className="flex items-center justify-between p-4 rounded-lg border hover:bg-muted/50 transition-colors">
+                    {/* Links: Auftragsinfo */}
+                    <div className="min-w-0 flex-1">
+                      <p className="font-mono font-semibold text-lg">
+                        {auftrag.auftragsnummer}
+                      </p>
+                      <p className="text-sm text-muted-foreground truncate">
+                        {auftrag.auftragsort || "Kein Ort"}
+                        {auftrag.auftragsbezeichnung && ` - ${auftrag.auftragsbezeichnung}`}
+                      </p>
+                    </div>
+
+                    {/* Rechts: Geräte-Badges */}
+                    <div className="flex flex-wrap gap-2 ml-4 justify-end">
+                      {auftrag.aktiveGeraete.length > 0 ? (
+                        auftrag.aktiveGeraete.map((geraet) => (
+                          <Badge
+                            key={geraet.id}
+                            variant="outline"
+                            className="flex items-center gap-1.5 bg-green-50 text-green-700 border-green-200"
+                          >
+                            <span
+                              className="w-2 h-2 rounded-full"
+                              style={{
+                                backgroundColor: geraet.status?.farbe || "#22c55e",
+                              }}
+                            />
+                            {geraet.name}
+                          </Badge>
+                        ))
+                      ) : (
+                        <span className="text-sm text-muted-foreground italic">
+                          Keine Geräte
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </Link>
               ))}
