@@ -3,6 +3,7 @@ import {
   getGeraeteStatistiken,
   getVerfuegbareGeraete,
   getImEinsatzStatusId,
+  getGeraetestatus,
 } from "@/lib/actions/geraete";
 import {
   getAktiveAuftraege,
@@ -38,6 +39,7 @@ export default async function DashboardPage() {
     ReturnType<typeof getAktiveAuftraegeMitEinsaetze>
   > = [];
   let imEinsatzStatusId: string | null = null;
+  let statusListe: Awaited<ReturnType<typeof getGeraetestatus>> = [];
 
   try {
     statistiken = await getGeraeteStatistiken();
@@ -81,6 +83,12 @@ export default async function DashboardPage() {
     console.error("Fehler beim Laden des Im-Einsatz-Status:", error);
   }
 
+  try {
+    statusListe = await getGeraetestatus();
+  } catch (error) {
+    console.error("Fehler beim Laden der Status-Liste:", error);
+  }
+
   // Transform verfuegbare Geräte for the board
   const geraeteFuerBoard = verfuegbareGeraete.map((g) => ({
     id: g.id,
@@ -116,6 +124,8 @@ export default async function DashboardPage() {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           aktiveAuftraege={auftraegeMitEinsaetze as any}
           imEinsatzStatusId={imEinsatzStatusId || ""}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          statusListe={statusListe as any}
         />
       </div>
     </Suspense>

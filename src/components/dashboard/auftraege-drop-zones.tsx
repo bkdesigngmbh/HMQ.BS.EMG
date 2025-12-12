@@ -3,7 +3,7 @@
 import { useDroppable } from "@dnd-kit/core";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Box } from "lucide-react";
+import { MapPin, Box, X } from "lucide-react";
 
 interface Einsatz {
   id: string;
@@ -23,9 +23,13 @@ interface Auftrag {
 
 interface AuftraegeDropZonesProps {
   auftraege: Auftrag[];
+  onEinsatzKlick: (einsatzId: string, geraetName: string) => void;
 }
 
-export function AuftraegeDropZones({ auftraege }: AuftraegeDropZonesProps) {
+export function AuftraegeDropZones({
+  auftraege,
+  onEinsatzKlick,
+}: AuftraegeDropZonesProps) {
   return (
     <div className="space-y-3">
       <h2 className="text-lg font-semibold">Aktive Aufträge</h2>
@@ -37,7 +41,11 @@ export function AuftraegeDropZones({ auftraege }: AuftraegeDropZonesProps) {
           </p>
         ) : (
           auftraege.map((auftrag) => (
-            <DroppableAuftrag key={auftrag.id} auftrag={auftrag} />
+            <DroppableAuftrag
+              key={auftrag.id}
+              auftrag={auftrag}
+              onEinsatzKlick={onEinsatzKlick}
+            />
           ))
         )}
       </div>
@@ -45,7 +53,13 @@ export function AuftraegeDropZones({ auftraege }: AuftraegeDropZonesProps) {
   );
 }
 
-function DroppableAuftrag({ auftrag }: { auftrag: Auftrag }) {
+function DroppableAuftrag({
+  auftrag,
+  onEinsatzKlick,
+}: {
+  auftrag: Auftrag;
+  onEinsatzKlick: (einsatzId: string, geraetName: string) => void;
+}) {
   const { isOver, setNodeRef } = useDroppable({
     id: auftrag.id,
   });
@@ -86,10 +100,13 @@ function DroppableAuftrag({ auftrag }: { auftrag: Auftrag }) {
             <Badge
               key={einsatz.id}
               variant="secondary"
-              className="flex items-center gap-1"
+              className="flex items-center gap-1 cursor-pointer hover:bg-red-100 hover:text-red-700 transition-colors"
+              onClick={() => onEinsatzKlick(einsatz.id, einsatz.geraet.name)}
+              title="Klicken um Einsatz zu beenden"
             >
               <Box className="h-3 w-3" />
               {einsatz.geraet.name}
+              <X className="h-3 w-3 ml-0.5" />
             </Badge>
           ))
         )}
