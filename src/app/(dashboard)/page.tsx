@@ -58,7 +58,8 @@ export default async function DashboardPage() {
     >
       <DashboardContent
         statistiken={statistiken}
-        aktiveAuftraege={aktiveAuftraege}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        aktiveAuftraege={aktiveAuftraege as any}
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         aktiveEinsaetze={aktiveEinsaetze as any}
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

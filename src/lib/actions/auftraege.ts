@@ -27,18 +27,56 @@ export async function getAktiveAuftraege() {
   try {
     const supabase = await createClient();
 
-    const { data, error } = await supabase
+    // Erst alle aktiven Aufträge laden
+    const { data: auftraege, error: auftraegeError } = await supabase
       .from("auftraege")
       .select("*")
       .eq("status", "aktiv")
       .order("auftragsnummer", { ascending: true });
 
-    if (error) {
-      console.error("Fehler beim Laden der aktiven Aufträge:", error);
+    if (auftraegeError) {
+      console.error("Fehler beim Laden der aktiven Aufträge:", auftraegeError);
       return [];
     }
 
-    return data || [];
+    if (!auftraege || auftraege.length === 0) {
+      return [];
+    }
+
+    // Dann alle aktiven Einsätze mit Geräten für diese Aufträge laden
+    const auftragIds = auftraege.map((a) => a.id);
+    const { data: einsaetze, error: einsaetzeError } = await supabase
+      .from("einsaetze")
+      .select(`
+        id,
+        auftrag_id,
+        bis_effektiv,
+        geraet:geraete (
+          id,
+          name,
+          status:status (
+            bezeichnung,
+            farbe
+          )
+        )
+      `)
+      .in("auftrag_id", auftragIds)
+      .is("bis_effektiv", null);
+
+    if (einsaetzeError) {
+      console.error("Fehler beim Laden der Einsätze:", einsaetzeError);
+    }
+
+    // Aufträge mit aktiven Geräten zusammenführen
+    const auftraegeMitGeraeten = auftraege.map((auftrag) => ({
+      ...auftrag,
+      aktiveGeraete: (einsaetze || [])
+        .filter((e) => e.auftrag_id === auftrag.id)
+        .map((e) => e.geraet)
+        .filter(Boolean),
+    }));
+
+    return auftraegeMitGeraeten;
   } catch (error) {
     console.error("Fehler beim Laden der aktiven Aufträge:", error);
     return [];
