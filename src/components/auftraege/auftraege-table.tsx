@@ -20,7 +20,7 @@ export function AuftraegeTable({ auftraege, isLoading = false }: AuftraegeTableP
       accessorKey: "auftragsnummer",
       sortable: true,
       cell: (auftrag) => (
-        <span className="font-mono font-medium">{auftrag.auftragsnummer}</span>
+        <span className="font-medium">{auftrag.auftragsnummer}</span>
       ),
     },
     {

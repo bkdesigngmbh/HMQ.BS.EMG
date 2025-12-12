@@ -70,3 +70,31 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Typographie Standards */
+@layer components {
+  /* Seiten-Titel */
+  .page-title {
+    @apply text-2xl font-bold tracking-tight;
+  }
+
+  /* Seiten-Beschreibung */
+  .page-description {
+    @apply text-muted-foreground;
+  }
+
+  /* Karten-Titel */
+  .card-title {
+    @apply text-lg font-semibold;
+  }
+
+  /* Form Labels */
+  .form-label {
+    @apply text-sm font-medium;
+  }
+
+  /* Technische Daten (IP, PIN, Koordinaten) */
+  .tech-value {
+    @apply font-mono text-sm;
+  }
+}

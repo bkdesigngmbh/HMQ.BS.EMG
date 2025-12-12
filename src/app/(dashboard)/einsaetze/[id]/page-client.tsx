@@ -167,7 +167,7 @@ export function EinsatzDetailClient({
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Seriennummer</span>
-              <span className="font-mono">{einsatz.geraet.seriennummer}</span>
+              <span>{einsatz.geraet.seriennummer}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Typ</span>
@@ -200,7 +200,7 @@ export function EinsatzDetailClient({
               <span className="text-muted-foreground">Nummer</span>
               <Link
                 href={`/auftraege/${einsatz.auftrag.id}`}
-                className="font-mono font-medium hover:underline"
+                className="font-medium hover:underline"
               >
                 {einsatz.auftrag.auftragsnummer}
               </Link>
