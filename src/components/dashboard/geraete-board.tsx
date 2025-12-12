@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, memo } from "react";
 import {
   DndContext,
   DragOverlay,
   closestCenter,
-  KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
@@ -55,7 +54,7 @@ interface GeraeteBoardProps {
   statusListe: Status[];
 }
 
-export function GeraeteBoard({
+export const GeraeteBoard = memo(function GeraeteBoard({
   verfuegbareGeraete,
   aktiveAuftraege,
   imEinsatzStatusId,
@@ -75,56 +74,65 @@ export function GeraeteBoard({
     geraetName: string;
   } | null>(null);
 
+  // Optimierte Sensors - nur PointerSensor mit höherer Distance
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8,
+        distance: 10,
       },
-    }),
-    useSensor(KeyboardSensor)
+    })
   );
 
-  function handleDragStart(event: DragStartEvent) {
-    const geraet = verfuegbareGeraete.find((g) => g.id === event.active.id);
-    if (geraet) {
-      setActiveGeraet(geraet);
-    }
-  }
-
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
-    setActiveGeraet(null);
-
-    if (!over) return;
-
-    // Prüfe ob über einem Auftrag gedroppt wurde
-    const auftrag = aktiveAuftraege.find((a) => a.id === over.id);
-    if (auftrag) {
-      const geraet = verfuegbareGeraete.find((g) => g.id === active.id);
+  const handleDragStart = useCallback(
+    (event: DragStartEvent) => {
+      const geraet = verfuegbareGeraete.find((g) => g.id === event.active.id);
       if (geraet) {
-        // Dialog öffnen für Standort-Eingabe
-        setDraggedGeraet(geraet);
-        setTargetAuftrag(auftrag);
-        setStandortDialogOpen(true);
+        setActiveGeraet(geraet);
       }
-    }
-  }
+    },
+    [verfuegbareGeraete]
+  );
 
-  function handleEinsatzKlick(einsatzId: string, geraetName: string) {
-    setZuBeendenderEinsatz({ id: einsatzId, geraetName });
-    setBeendenDialogOpen(true);
-  }
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
+      setActiveGeraet(null);
 
-  function handleStandortDialogClose() {
+      if (!over) return;
+
+      // Prüfe ob über einem Auftrag gedroppt wurde
+      const auftrag = aktiveAuftraege.find((a) => a.id === over.id);
+      if (auftrag) {
+        const geraet = verfuegbareGeraete.find((g) => g.id === active.id);
+        if (geraet) {
+          // Dialog öffnen für Standort-Eingabe
+          setDraggedGeraet(geraet);
+          setTargetAuftrag(auftrag);
+          setStandortDialogOpen(true);
+        }
+      }
+    },
+    [aktiveAuftraege, verfuegbareGeraete]
+  );
+
+  const handleEinsatzKlick = useCallback(
+    (einsatzId: string, geraetName: string) => {
+      setZuBeendenderEinsatz({ id: einsatzId, geraetName });
+      setBeendenDialogOpen(true);
+    },
+    []
+  );
+
+  const handleStandortDialogClose = useCallback(() => {
     setStandortDialogOpen(false);
     setDraggedGeraet(null);
     setTargetAuftrag(null);
-  }
+  }, []);
 
-  function handleBeendenDialogClose() {
+  const handleBeendenDialogClose = useCallback(() => {
     setBeendenDialogOpen(false);
     setZuBeendenderEinsatz(null);
-  }
+  }, []);
 
   return (
     <DndContext
@@ -149,23 +157,27 @@ export function GeraeteBoard({
         {activeGeraet ? <GeraetCard geraet={activeGeraet} isDragging /> : null}
       </DragOverlay>
 
-      {/* Standort-Dialog */}
-      <StandortDialog
-        open={standortDialogOpen}
-        onClose={handleStandortDialogClose}
-        geraet={draggedGeraet}
-        auftrag={targetAuftrag}
-        imEinsatzStatusId={imEinsatzStatusId}
-      />
+      {/* Standort-Dialog - nur rendern wenn offen */}
+      {standortDialogOpen && (
+        <StandortDialog
+          open={standortDialogOpen}
+          onClose={handleStandortDialogClose}
+          geraet={draggedGeraet}
+          auftrag={targetAuftrag}
+          imEinsatzStatusId={imEinsatzStatusId}
+        />
+      )}
 
-      {/* Einsatz-Beenden-Dialog */}
-      <EinsatzBeendenDialog
-        open={beendenDialogOpen}
-        onClose={handleBeendenDialogClose}
-        einsatzId={zuBeendenderEinsatz?.id || null}
-        geraetName={zuBeendenderEinsatz?.geraetName || null}
-        statusListe={statusListe}
-      />
+      {/* Einsatz-Beenden-Dialog - nur rendern wenn offen */}
+      {beendenDialogOpen && (
+        <EinsatzBeendenDialog
+          open={beendenDialogOpen}
+          onClose={handleBeendenDialogClose}
+          einsatzId={zuBeendenderEinsatz?.id || null}
+          geraetName={zuBeendenderEinsatz?.geraetName || null}
+          statusListe={statusListe}
+        />
+      )}
     </DndContext>
   );
-}
+});

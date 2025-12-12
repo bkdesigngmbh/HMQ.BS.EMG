@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -26,7 +27,7 @@ interface AuftraegeDropZonesProps {
   onEinsatzKlick: (einsatzId: string, geraetName: string) => void;
 }
 
-export function AuftraegeDropZones({
+export const AuftraegeDropZones = memo(function AuftraegeDropZones({
   auftraege,
   onEinsatzKlick,
 }: AuftraegeDropZonesProps) {
@@ -51,9 +52,9 @@ export function AuftraegeDropZones({
       </div>
     </div>
   );
-}
+});
 
-function DroppableAuftrag({
+const DroppableAuftrag = memo(function DroppableAuftrag({
   auftrag,
   onEinsatzKlick,
 }: {
@@ -113,4 +114,4 @@ function DroppableAuftrag({
       </div>
     </div>
   );
-}
+});

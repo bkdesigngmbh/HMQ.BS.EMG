@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Box } from "lucide-react";
@@ -17,7 +18,10 @@ interface GeraetCardProps {
   isDragging?: boolean;
 }
 
-export function GeraetCard({ geraet, isDragging }: GeraetCardProps) {
+export const GeraetCard = memo(function GeraetCard({
+  geraet,
+  isDragging,
+}: GeraetCardProps) {
   return (
     <div
       className={cn(
@@ -39,4 +43,4 @@ export function GeraetCard({ geraet, isDragging }: GeraetCardProps) {
       )}
     </div>
   );
-}
+});

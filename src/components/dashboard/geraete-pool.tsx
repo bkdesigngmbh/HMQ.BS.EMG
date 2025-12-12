@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { GeraetCard } from "./geraet-card";
@@ -16,7 +17,9 @@ interface GeraetePoolProps {
   geraete: Geraet[];
 }
 
-export function GeraetePool({ geraete }: GeraetePoolProps) {
+export const GeraetePool = memo(function GeraetePool({
+  geraete,
+}: GeraetePoolProps) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
@@ -39,9 +42,13 @@ export function GeraetePool({ geraete }: GeraetePoolProps) {
       </div>
     </div>
   );
-}
+});
 
-function DraggableGeraet({ geraet }: { geraet: Geraet }) {
+const DraggableGeraet = memo(function DraggableGeraet({
+  geraet,
+}: {
+  geraet: Geraet;
+}) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
       id: geraet.id,
@@ -57,4 +64,4 @@ function DraggableGeraet({ geraet }: { geraet: Geraet }) {
       <GeraetCard geraet={geraet} />
     </div>
   );
-}
+});
